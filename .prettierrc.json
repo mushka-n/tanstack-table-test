@@ -1,0 +1,12 @@
+{
+  "importOrder": ["<THIRD_PARTY_MODULES>", "^@/api/(.*)$", "^[./]"],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+
+  "trailingComma": "es5",
+  "tabWidth": 2,
+  "semi": true,
+  "singleQuote": true,
+  "jsxSingleQuote": true,
+  "bracketSpacing": true
+}
