@@ -1,8 +1,9 @@
 {
-  "name": "onlyoffice-radix",
+  "name": "tanstack-table-test",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://mushka-n.github.io/tanstack-table-test/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
