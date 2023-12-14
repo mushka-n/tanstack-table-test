@@ -5,7 +5,7 @@ import { useGetTableSizes } from './useTableSizing';
 const getColumnsArrayByTypeName = (itemTypeName: AnyItemTypeName = 'file') => {
   if (itemTypeName === 'file')
     return [
-      CellKeys.TITLE,
+      'title',
       'createdby',
       'created',
       'updated',
@@ -24,36 +24,36 @@ export const useColumnDef = (
     {
       accessorKey: 'title',
       header: 'Name',
-      size: columnSizes['title'],
+      size: columnSizes ? columnSizes['title'] : 120,
       cell: (info) => info.getValue(),
     },
     {
       accessorKey: 'createdby',
-      size: columnSizes['createdby'],
+      size: columnSizes ? columnSizes['createdby'] : 120,
       header: 'Author',
       cell: (info) => info.getValue(),
     },
     {
       accessorKey: 'created',
-      size: columnSizes['created'],
+      size: columnSizes ? columnSizes['created'] : 120,
       header: 'Created',
       cell: (info) => info.getValue().toDateString(),
     },
     {
       accessorKey: 'updated',
-      size: columnSizes['updated'],
+      size: columnSizes ? columnSizes['updated'] : 120,
       header: 'Modified',
       cell: (info) => info.getValue().toDateString(),
     },
     {
       accessorKey: 'contentLength',
-      size: columnSizes['contentLength'],
+      size: columnSizes ? columnSizes['contentLength'] : 120,
       header: 'Size',
       cell: (info) => info.getValue(),
     },
     {
       accessorKey: 'fileType',
-      size: columnSizes['fileType'],
+      size: columnSizes ? columnSizes['fileType'] : 120,
       header: 'Type',
       cell: (info) => info.getValue(),
     },
