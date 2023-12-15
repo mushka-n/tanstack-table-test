@@ -1,7 +1,7 @@
 import { throttle } from 'lodash';
 import { HeaderGroup } from '@tanstack/react-table';
 
-import { AnyItemType } from './types';
+import { AnyDataType } from './index.types';
 
 const getTablesData = (): Record<string, Record<string, number>> | null => {
   const tablesDataLS = localStorage.getItem('tablesData');
@@ -30,7 +30,7 @@ export const useGetColumnSize = (
 };
 
 export const useSaveTableSizes = throttle(
-  (tableId: string, headerGroup: HeaderGroup<AnyItemType>) => {
+  (tableId: string, headerGroup: HeaderGroup<AnyDataType>) => {
     let tablesData = getTablesData();
     if (!tablesData) tablesData = { [tableId]: {} };
     if (!tablesData[tableId]) tablesData[tableId] = {};

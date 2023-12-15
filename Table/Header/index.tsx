@@ -1,10 +1,10 @@
 import { Table, flexRender } from '@tanstack/react-table';
-import { AnyItemType } from '../types';
+import { AnyDataType } from '../index.types';
 import { useSaveTableSizes } from '../useTableSizing';
 
 interface TableHeaderProps {
   tableId: string;
-  table: Table<AnyItemType>;
+  table: Table<AnyDataType>;
 }
 
 const TableHeader = ({ tableId, table }: TableHeaderProps) => {

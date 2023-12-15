@@ -1,9 +1,12 @@
-import { File, User } from './Table/types';
+import { DSUser } from './constants/DSUsers/DSUser';
+import { DSFile } from './constants/DSItems/DSFile';
 
-export const peopleData: User[] = [
+export const peopleData: DSUser[] = [
   {
     id: '3fcfa5c9-19b3-4bb2-8d30-3192143a5c4e',
     displayName: 'Никита Мушка',
+    email: 'nikitamushka@mail.ru',
+    role: 'owner',
     avatarSmall:
       '/static/images/default_user_photo_size_32-32.png?hash=819878304',
     profileUrl: 'https://namushka.onlyoffice.com/accounts/view/nikitamushka',
@@ -12,6 +15,8 @@ export const peopleData: User[] = [
   {
     id: 'b626be14-cf4f-475b-990b-7e1eacd44903',
     displayName: 'Иван Иванов',
+    email: 'ivanivanov@mail.ru',
+    role: 'admin',
     avatarSmall:
       '/static/images/default_user_photo_size_32-32.png?hash=819878304',
     profileUrl: 'https://namushka.onlyoffice.com/accounts/view/ivanivanov',
@@ -19,11 +24,11 @@ export const peopleData: User[] = [
   },
 ];
 
-export const fileData: File[] = [
+export const fileData: DSFile[] = [
   {
     id: 1,
     title: 'New Presentation',
-    author: peopleData[0],
+    createdBy: peopleData[0],
     contentLength: '3.7 MB',
     created: new Date('2023/12/12'),
     updated: new Date('2023/12/24'),
@@ -32,7 +37,7 @@ export const fileData: File[] = [
   {
     id: 1,
     title: 'New Document',
-    author: peopleData[1],
+    createdBy: peopleData[1],
     contentLength: '2.71 MB',
     created: new Date('2023/12/12'),
     updated: new Date('2023/12/24'),
@@ -41,7 +46,7 @@ export const fileData: File[] = [
   {
     id: 1,
     title: 'New Spreadsheet',
-    author: peopleData[0],
+    createdBy: peopleData[0],
     contentLength: '8.9 MB',
     created: new Date('2023/12/12'),
     updated: new Date('2023/12/24'),
@@ -49,8 +54,7 @@ export const fileData: File[] = [
   },
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const onlyofficeFile = {
+export const onlyofficeFile = {
   folderId: 920,
   version: 1,
   versionGroup: 1,
@@ -124,4 +128,32 @@ const onlyofficeFile = {
     profileUrl: 'https://namushka.onlyoffice.com/accounts/view/nikitamushka',
     hasAvatar: false,
   },
+};
+
+export const onlyofficeUser = {
+  firstName: 'Никита',
+  lastName: 'Мушка',
+  userName: 'nikitamushka',
+  email: 'nikitamushka@mail.ru',
+  status: 1,
+  activationStatus: 1,
+  department: '',
+  workFrom: '2023-04-25T21:14:40.0000000+03:00',
+  avatar: '/static/images/default_user_photo_size_82-82.png?hash=819878304',
+  isAdmin: true,
+  isRoomAdmin: false,
+  isLDAP: false,
+  listAdminModules: ['files', 'people'],
+  isOwner: true,
+  isVisitor: false,
+  isCollaborator: false,
+  mobilePhone: '+79308136666',
+  mobilePhoneActivationStatus: 0,
+  isSSO: false,
+  quotaLimit: 0,
+  usedSpace: 0,
+  id: '3fcfa5c9-19b3-4bb2-8d30-3192143a5c4e',
+  displayName: 'Никита Мушка',
+  profileUrl: 'https://namushka.onlyoffice.com/accounts/view/nikitamushka',
+  hasAvatar: false,
 };

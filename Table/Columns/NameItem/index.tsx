@@ -1,23 +1,22 @@
-import NameItemCell from '.';
 import { CellContext } from '@tanstack/react-table';
-import { AnyItemType } from '../../types';
-import { useGetColumnSize } from '../../useTableSizing';
+import { AccessorKeys } from '../../index.constants';
+import { DSFile } from '../../../constants/DSItems/DSFile';
 
 const DEFAULT_SIZE = 120;
 const MIN_SIZE = 80;
-const MAX_SIZE = 200;
+const MAX_SIZE = 480;
 
 const NameItemColumn = (savedColumnSize?: number) => {
   return {
-    accessorKey: 'title',
+    accessorKey: AccessorKeys.NameItem,
     header: 'Name',
 
     size: savedColumnSize ?? DEFAULT_SIZE,
     minSize: MIN_SIZE,
     maxSize: MAX_SIZE,
 
-    cell: ({ getValue }: CellContext<AnyItemType, any>) => {
-      return <p>{getValue()}</p>;
+    cell: ({ getValue }: CellContext<DSFile, string>) => {
+      return <div>{getValue()}</div>;
     },
   };
 };

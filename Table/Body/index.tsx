@@ -1,8 +1,8 @@
 import { Table, flexRender } from '@tanstack/react-table';
-import { AnyItemType } from '../types';
+import { AnyDataType } from '../index.types';
 
 interface TableBodyProps {
-  table: Table<AnyItemType>;
+  table: Table<AnyDataType>;
 }
 
 const TableBody = ({ table }: TableBodyProps) => {
