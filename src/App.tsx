@@ -8,7 +8,7 @@ function App() {
         <Table id={'table_mydocuments'} itemTypeName='file' data={fileData} />
       </div>
 
-      <div style={{ height: '200px' }}></div>
+      <div style={{ height: '48px' }}></div>
 
       <div style={{ width: 'calc(100vw - 200px)', height: '200px' }}>
         <Table

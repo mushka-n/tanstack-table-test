@@ -35,7 +35,7 @@ const TableHeader = ({ tableId, table }: TableHeaderProps) => {
                   right: '0',
                   top: '0',
                   height: '100%',
-                  width: '5px',
+                  width: '3px',
                   background: 'rgba(0, 0, 0, 0.5)',
                   cursor: 'col-resize',
                   userSelect: 'none',

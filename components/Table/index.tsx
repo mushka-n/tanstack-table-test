@@ -24,7 +24,7 @@ const Table = ({ id, itemTypeName, data }: TableProps) => {
   });
 
   return (
-    <table id={id} width={'100%'}>
+    <table id={id} style={{ width: '100%', backgroundColor: '#efefeffa' }}>
       <Header tableId={id} table={table} />
       <Body table={table} />
     </table>
