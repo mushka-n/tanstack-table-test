@@ -1,30 +1,61 @@
-# React + TypeScript + Vite
+# Tanstack Table Test
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a sample web app project created to test the [Tanstack Table Library](https://tanstack.com/). The project is built with React, Vite, and TypeScript.
 
-Currently, two official plugins are available:
+## Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Check out the deployed version of the app: [Tanstack Table Test](https://mushka-n.github.io/tanstack-table-test/)
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Prerequisites
 
-- Configure the top-level `parserOptions` property like this:
+Make sure you have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed on your machine.
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-};
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/mushka-n/tanstack-table-test.git
+   ```
+
+2. Navigate to the project folder:
+
+   ```bash
+   cd tanstack-table-test
+   ```
+
+3. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+### Development
+
+To run the app locally for development:
+
+```bash
+npm run dev
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Open your browser and visit [http://localhost:3000](http://localhost:3000) to view the app.
+
+### Building for Production
+
+To build the app for production:
+
+```bash
+npm run build
+```
+
+The optimized production build will be available in the `dist` directory.
+
+## Contributing
+
+Feel free to contribute to the project by opening issues or creating pull requests. We appreciate any feedback and improvements.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
