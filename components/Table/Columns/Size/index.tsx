@@ -1,24 +1,24 @@
 import { CellContext } from '@tanstack/react-table';
 import { AccessorKeys } from '../../index.constants';
-import { DSUser } from '../../../constants/DSUsers/DSUser';
+import { DSFile } from '../../../../types/DSItems/DSFile';
 
 const DEFAULT_SIZE = 120;
 const MIN_SIZE = 80;
 const MAX_SIZE = 480;
 
-const NameUserColumn = (savedColumnSize?: number) => {
+const SizeColumn = (savedColumnSize?: number) => {
   return {
-    accessorKey: AccessorKeys.NameUser,
-    header: 'Name',
+    accessorKey: AccessorKeys.SizeItem,
+    header: 'Size',
 
     size: savedColumnSize ?? DEFAULT_SIZE,
     minSize: MIN_SIZE,
     maxSize: MAX_SIZE,
 
-    cell: ({ getValue }: CellContext<DSUser, string>) => {
+    cell: ({ getValue }: CellContext<DSFile, string>) => {
       return <div>{getValue()}</div>;
     },
   };
 };
 
-export default NameUserColumn;
+export default SizeColumn;

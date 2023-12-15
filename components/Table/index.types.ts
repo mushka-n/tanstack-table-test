@@ -1,5 +1,5 @@
-import { DSUser } from '../constants/DSUsers/DSUser';
-import { DSFile } from '../constants/DSItems/DSFile';
+import { DSUser } from '../../types/DSUsers/DSUser';
+import { DSFile } from '../../types/DSItems/DSFile';
 
 type TableItemTypeMap = {
   file: DSFile;

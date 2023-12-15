@@ -1,6 +1,6 @@
 import { CellContext } from '@tanstack/react-table';
-import { DSFile } from '../../../constants/DSItems/DSFile';
-import { DSUser } from '../../../constants/DSUsers/DSUser';
+import { DSFile } from '../../../../types/DSItems/DSFile';
+import { DSUser } from '../../../../types/DSUsers/DSUser';
 import { AccessorKeys } from '../../index.constants';
 
 const DEFAULT_SIZE = 120;

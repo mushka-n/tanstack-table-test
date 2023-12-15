@@ -1,10 +1,10 @@
 import { CellContext } from '@tanstack/react-table';
 import { AccessorKeys } from '../../index.constants';
-import { DSUser } from '../../../constants/DSUsers/DSUser';
+import { DSUser } from '../../../../types/DSUsers/DSUser';
 import {
   DSUserRole,
   getDSUserRoleTranslation,
-} from '../../../constants/DSUsers/DSUserRole';
+} from '../../../../types/DSUsers/DSUserRole';
 
 const DEFAULT_SIZE = 120;
 const MIN_SIZE = 80;

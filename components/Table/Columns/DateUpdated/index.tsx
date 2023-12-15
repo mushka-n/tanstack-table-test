@@ -1,15 +1,15 @@
 import { CellContext } from '@tanstack/react-table';
-import { DSFile } from '../../../constants/DSItems/DSFile';
+import { DSFile } from '../../../../types/DSItems/DSFile';
 import { AccessorKeys } from '../../index.constants';
 
 const DEFAULT_SIZE = 120;
 const MIN_SIZE = 80;
 const MAX_SIZE = 160;
 
-const CreatedDateColumn = (savedColumnSize?: number) => {
+const DateUpdatedColumn = (savedColumnSize?: number) => {
   return {
-    accessorKey: AccessorKeys.DateCreated,
-    header: 'Created',
+    accessorKey: AccessorKeys.DateUpdated,
+    header: 'Updated',
 
     size: savedColumnSize ?? DEFAULT_SIZE,
     minSize: MIN_SIZE,
@@ -21,4 +21,4 @@ const CreatedDateColumn = (savedColumnSize?: number) => {
   };
 };
 
-export default CreatedDateColumn;
+export default DateUpdatedColumn;

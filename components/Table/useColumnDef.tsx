@@ -4,8 +4,8 @@ import { AnyDataTypeKey } from './index.types';
 import { useGetTableSizes } from './useTableSizing';
 
 import Columns from './Columns';
-import { DSFile } from '../constants/DSItems/DSFile';
-import { DSUser } from '../constants/DSUsers/DSUser';
+import { DSFile } from '../../types/DSItems/DSFile';
+import { DSUser } from '../../types/DSUsers/DSUser';
 
 export const useColumnDef = (
   tableId: string,

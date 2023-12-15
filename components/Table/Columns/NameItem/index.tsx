@@ -1,25 +1,24 @@
 import { CellContext } from '@tanstack/react-table';
 import { AccessorKeys } from '../../index.constants';
-import { DSFile } from '../../../constants/DSItems/DSFile';
-import { getFileTypeFullName } from '../../../constants/DSItems/DSFileType';
+import { DSFile } from '../../../../types/DSItems/DSFile';
 
 const DEFAULT_SIZE = 120;
 const MIN_SIZE = 80;
 const MAX_SIZE = 480;
 
-const FileTypeColumn = (savedColumnSize?: number) => {
+const NameItemColumn = (savedColumnSize?: number) => {
   return {
-    accessorKey: AccessorKeys.TypeFile,
-    header: 'Type',
+    accessorKey: AccessorKeys.NameItem,
+    header: 'Name',
 
     size: savedColumnSize ?? DEFAULT_SIZE,
     minSize: MIN_SIZE,
     maxSize: MAX_SIZE,
 
     cell: ({ getValue }: CellContext<DSFile, string>) => {
-      return <div>{getFileTypeFullName(+getValue())}</div>;
+      return <div>{getValue()}</div>;
     },
   };
 };
 
-export default FileTypeColumn;
+export default NameItemColumn;
