@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { AnyItemType, AnyItemTypeName, CellKeys } from './types';
 import { useGetTableSizes } from './useTableSizing';
+import NameItemColumn from './Cells/NameItem/column';
 
 const getColumnsArrayByTypeName = (itemTypeName: AnyItemTypeName = 'file') => {
   if (itemTypeName === 'file')
@@ -14,52 +15,53 @@ const getColumnsArrayByTypeName = (itemTypeName: AnyItemTypeName = 'file') => {
     ];
 };
 
-export const useColumnDef = (
-  tableId: string,
-  itemTypeName: AnyItemTypeName = 'file'
+export const getFileColumnDef = (
+  columnSizes: Record<string, number> | null
 ) => {
-  const columnSizes = useGetTableSizes(tableId);
-
   const columns: ColumnDef<AnyItemType>[] = [
-    {
-      accessorKey: 'title',
-      header: 'Name',
-      size: columnSizes ? columnSizes['title'] : 120,
-      cell: (info) => info.getValue(),
-    },
+    NameItemColumn(columnSizes?.['title']),
     {
       accessorKey: 'createdby',
-      size: columnSizes ? columnSizes['createdby'] : 120,
+      size: columnSizes?.['createdby'],
       header: 'Author',
       cell: (info) => info.getValue(),
     },
     {
       accessorKey: 'created',
-      size: columnSizes ? columnSizes['created'] : 120,
+      size: columnSizes?.['created'],
       header: 'Created',
       cell: (info) => info.getValue().toDateString(),
     },
     {
       accessorKey: 'updated',
-      size: columnSizes ? columnSizes['updated'] : 120,
+      size: columnSizes?.['updated'],
       header: 'Modified',
       cell: (info) => info.getValue().toDateString(),
     },
     {
       accessorKey: 'contentLength',
-      size: columnSizes ? columnSizes['contentLength'] : 120,
+      size: columnSizes?.['contentLength'],
       header: 'Size',
       cell: (info) => info.getValue(),
     },
     {
       accessorKey: 'fileType',
-      size: columnSizes ? columnSizes['fileType'] : 120,
+      size: columnSizes?.['fileType'],
       header: 'Type',
       cell: (info) => info.getValue(),
     },
   ];
 
   return columns;
+};
+
+export const useColumnDef = (
+  tableId: string,
+  itemTypeName: AnyItemTypeName = 'file'
+) => {
+  const columnSizes = useGetTableSizes(tableId);
+
+  return getFileColumnDef(columnSizes);
 };
 
 export default useColumnDef;

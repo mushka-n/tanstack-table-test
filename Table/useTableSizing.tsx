@@ -15,8 +15,18 @@ export const useGetTableSizes = (
 ): Record<string, number> | null => {
   const tablesData = getTablesData();
 
-  if (!tablesData || !tablesData[tableId]) return null;
+  if (!tablesData?.[tableId]) return null;
   return tablesData[tableId];
+};
+
+export const useGetColumnSize = (
+  tableId: string,
+  columnId: string
+): number | null => {
+  const tablesData = getTablesData();
+
+  if (!tablesData?.[tableId]?.[columnId]) return null;
+  return tablesData[tableId][columnId];
 };
 
 export const useSaveTableSizes = throttle(

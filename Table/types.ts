@@ -22,7 +22,7 @@ export enum FileType {
 }
 
 export const CellKeys = {
-  TITLE: 'title',
+  Title: 'title',
 };
 
 export type File = {
