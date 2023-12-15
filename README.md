@@ -4,7 +4,7 @@ This is a sample web app created to test the [TanStack Table](https://tanstack.c
 
 ## Demo
 
-Check out the deployed version of the app: [Tanstack Table Test](https://mushka-n.github.io/tanstack-table-test/)
+Check out the [deployed version of the app](https://mushka-n.github.io/tanstack-table-test/)
 
 ## Local setup
 
