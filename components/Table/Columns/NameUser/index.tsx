@@ -15,6 +15,8 @@ const NameUserColumn = (savedColumnSize?: number) => {
     minSize: MIN_SIZE,
     maxSize: MAX_SIZE,
 
+    enableHiding: false,
+
     cell: ({ getValue }: CellContext<DSUser, string>) => {
       return <div>{getValue()}</div>;
     },

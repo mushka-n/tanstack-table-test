@@ -9,7 +9,7 @@ const TableBody = ({ table }: TableBodyProps) => {
   return (
     <tbody>
       {table.getRowModel().rows.map((row) => (
-        <tr key={row.id}>
+        <tr key={row.id} style={{ height: '48px' }}>
           {row.getVisibleCells().map((cell) => (
             <td key={cell.id}>
               {flexRender(cell.column.columnDef.cell, cell.getContext())}

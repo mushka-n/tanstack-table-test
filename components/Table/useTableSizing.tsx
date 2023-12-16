@@ -4,7 +4,7 @@ import { HeaderGroup } from '@tanstack/react-table';
 import { AnyDataType } from './index.types';
 
 const getTablesData = (): Record<string, Record<string, number>> | null => {
-  const tablesDataLS = localStorage.getItem('tablesData');
+  const tablesDataLS = localStorage.getItem('tablesSizingData');
 
   if (!tablesDataLS) return null;
   return JSON.parse(tablesDataLS);
@@ -19,15 +19,15 @@ export const useGetTableSizes = (
   return tablesData[tableId];
 };
 
-export const useGetColumnSize = (
-  tableId: string,
-  columnId: string
-): number | null => {
-  const tablesData = getTablesData();
+// export const useGetColumnSize = (
+//   tableId: string,
+//   columnId: string
+// ): number | null => {
+//   const tablesData = getTablesData();
 
-  if (!tablesData?.[tableId]?.[columnId]) return null;
-  return tablesData[tableId][columnId];
-};
+//   if (!tablesData?.[tableId]?.[columnId]) return null;
+//   return tablesData[tableId][columnId];
+// };
 
 export const useSaveTableSizes = throttle(
   (tableId: string, headerGroup: HeaderGroup<AnyDataType>) => {
@@ -39,7 +39,7 @@ export const useSaveTableSizes = throttle(
       (header) => (tablesData![tableId][header.id] = header.getSize() || 120)
     );
 
-    localStorage.setItem('tablesData', JSON.stringify(tablesData));
+    localStorage.setItem('tablesSizingData', JSON.stringify(tablesData));
   },
   500
 );

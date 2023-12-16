@@ -15,6 +15,8 @@ const NameItemColumn = (savedColumnSize?: number) => {
     minSize: MIN_SIZE,
     maxSize: MAX_SIZE,
 
+    enableHiding: false,
+
     cell: ({ getValue }: CellContext<DSFile, string>) => {
       return <div>{getValue()}</div>;
     },

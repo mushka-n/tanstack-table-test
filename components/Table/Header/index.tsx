@@ -35,13 +35,25 @@ const TableHeader = ({ tableId, table }: TableHeaderProps) => {
                   right: '0',
                   top: '0',
                   height: '100%',
-                  width: '3px',
-                  background: 'rgba(0, 0, 0, 0.5)',
+                  padding: '0 2px',
+                  boxSizing: 'border-box',
+                  width: '5px',
                   cursor: 'col-resize',
                   userSelect: 'none',
                   touchAction: 'none',
                 }}
-              />
+              >
+                <div
+                  style={{
+                    height: '100%',
+                    width: '1px',
+                    maxWidth: '1px',
+                    background: 'rgba(0, 0, 0, 0.5)',
+                    userSelect: 'none',
+                    touchAction: 'none',
+                  }}
+                ></div>
+              </div>
             )}
           </th>
         ))}
