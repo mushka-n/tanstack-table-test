@@ -8,7 +8,7 @@ const MAX_SIZE = 480;
 
 const SizeColumn = (savedColumnSize?: number) => {
   return {
-    accessorKey: AccessorKeys.SizeItem,
+    accessorKey: AccessorKeys.SizeFile,
     header: 'Size',
 
     size: savedColumnSize ?? DEFAULT_SIZE,

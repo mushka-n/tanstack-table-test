@@ -9,22 +9,24 @@ import Body from './Body';
 interface TableProps {
   id: string;
   data: AnyDataType[];
-  itemTypeName: AnyDataTypeKey;
+  dataTypeKey: AnyDataTypeKey;
 }
 
-const Table = ({ id, itemTypeName, data }: TableProps) => {
-  const [columnVisibility, setColumnVisibility] = useTableVisibility(id);
+const Table = ({ id, dataTypeKey, data }: TableProps) => {
+  const [columnVisibility, setColumnVisibility] = useTableVisibility(
+    id,
+    dataTypeKey
+  );
 
   const table = useReactTable({
     data,
     // @ts-expect-error: -
     // ColumnDef generic can't understand the difference between AnyDataType and (DSFile | DSUser | ...) ,
     // but table data can only be provided as a single type
-    columns: useColumnDef(id, itemTypeName),
+    columns: useColumnDef(id, dataTypeKey),
     getCoreRowModel: getCoreRowModel(),
-
-    columnResizeMode: 'onChange',
     state: { columnVisibility },
+    columnResizeMode: 'onChange',
     onColumnVisibilityChange: setColumnVisibility,
   });
 

@@ -4,19 +4,22 @@ import {
   VisibilityState,
 } from '@tanstack/react-table';
 import { useState } from 'react';
+import { getDefaultVisibility } from './index.constants';
+import { AnyDataTypeKey } from './index.types';
 
 export const useTableVisibility = (
-  tableId: string
+  tableId: string,
+  dataTypeKey: AnyDataTypeKey
 ): [VisibilityState, OnChangeFn<VisibilityState>] => {
   const [columnVisibility, setColumnVisibility] = useState(
-    onGetColumnVisibility(tableId)
+    onGetColumnVisibility(tableId, dataTypeKey)
   );
 
   const setColumnVisibilityCustom = (
     columnVisibilityUpdater: TableUpdater<VisibilityState>
   ) => {
     setColumnVisibility(columnVisibilityUpdater);
-    onSaveColumnVisibility(tableId, columnVisibilityUpdater);
+    onSaveColumnVisibility(tableId, dataTypeKey, columnVisibilityUpdater);
   };
 
   return [columnVisibility, setColumnVisibilityCustom];
@@ -24,36 +27,48 @@ export const useTableVisibility = (
 
 // Local Storage Manipulation
 
-const onGetTablesVisibilityData = () => {
+const onGetTablesVisibilityData = (): Record<
+  string,
+  VisibilityState
+> | null => {
   const tablesDataLS = localStorage.getItem('tablesVisibilityData');
   if (!tablesDataLS) return null;
 
   return JSON.parse(tablesDataLS);
 };
 
-export const onGetColumnVisibility = (tableId: string) => {
+export const onGetColumnVisibility = (
+  tableId: string,
+  dataTypeKey: AnyDataTypeKey
+): VisibilityState => {
   const tablesData = onGetTablesVisibilityData();
 
-  if (!tablesData?.[tableId]) return null;
+  if (!tablesData?.[tableId]) return getDefaultVisibility(dataTypeKey);
   return tablesData[tableId];
 };
 
 export const onSaveColumnVisibility = (
   tableId: string,
+  dataTypeKey: AnyDataTypeKey,
   columnVisibilityUpdater: TableUpdater<VisibilityState>
 ) => {
   if (typeof columnVisibilityUpdater !== 'function') return;
-
   const columnVisibility = columnVisibilityUpdater({});
   const [columnId] = Object.keys(columnVisibility);
   const [columnValue] = Object.values(columnVisibility);
 
   let tablesData = onGetTablesVisibilityData();
 
-  if (!tablesData) tablesData = { [tableId]: { columnId: columnValue } };
-  else if (!tablesData[tableId])
-    tablesData[tableId] = { [columnId]: columnValue };
-  else tablesData[tableId][columnId] = columnValue;
+  if (!tablesData?.[tableId]) {
+    const updatedDefaultVisibility = {
+      ...getDefaultVisibility(dataTypeKey),
+      [columnId]: columnValue,
+    };
+    if (!tablesData) tablesData = { [tableId]: updatedDefaultVisibility };
+    else tablesData[tableId] = updatedDefaultVisibility;
+  } else {
+    tablesData[tableId][columnId] = columnValue;
+  }
 
   localStorage.setItem('tablesVisibilityData', JSON.stringify(tablesData));
 };

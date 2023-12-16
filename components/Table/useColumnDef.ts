@@ -9,11 +9,11 @@ import { DSUser } from '../../types/DSUsers/DSUser';
 
 export const useColumnDef = (
   tableId: string,
-  itemTypeName: AnyDataTypeKey = 'file'
+  dataTypeKey: AnyDataTypeKey = 'file'
 ): ColumnDef<DSFile, never>[] | ColumnDef<DSUser, never>[] => {
   const columnSizes = useGetTableSizes(tableId);
 
-  if (itemTypeName === 'file') return getFileColumnDef(columnSizes);
+  if (dataTypeKey === 'file') return getFileColumnDef(columnSizes);
   return getUserColumnDef(columnSizes);
 };
 
@@ -22,10 +22,10 @@ const getFileColumnDef = (
 ): ColumnDef<DSFile, never>[] => {
   return [
     Columns.NameItemColumn(columnSizes?.[AccessorKeys.NameItem]),
-    Columns.AuthorColumn(columnSizes?.[AccessorKeys.AuthorItem]),
+    Columns.AuthorColumn(columnSizes?.[AccessorKeys.FileAuthorUser]),
     Columns.CreatedDateColumn(columnSizes?.[AccessorKeys.DateCreated]),
     Columns.DateUpdatedColumn(columnSizes?.[AccessorKeys.DateUpdated]),
-    Columns.SizeColumn(columnSizes?.[AccessorKeys.SizeItem]),
+    Columns.SizeColumn(columnSizes?.[AccessorKeys.SizeFile]),
     Columns.FileTypeColumn(columnSizes?.[AccessorKeys.TypeFile]),
   ];
 };

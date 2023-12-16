@@ -9,7 +9,7 @@ const MAX_SIZE = 480;
 
 const AuthorColumn = (savedColumnSize?: number) => {
   return {
-    accessorKey: AccessorKeys.AuthorItem,
+    accessorKey: AccessorKeys.FileAuthorUser,
     header: 'Author',
 
     size: savedColumnSize ?? DEFAULT_SIZE,

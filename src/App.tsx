@@ -5,7 +5,7 @@ function App() {
   return (
     <>
       <div style={{ width: 'calc(100vw - 200px)', margin: ' 0 auto' }}>
-        <Table id={'table_mydocuments'} itemTypeName='file' data={fileData} />
+        <Table id={'table_mydocuments'} dataTypeKey='file' data={fileData} />
       </div>
 
       <div
@@ -24,7 +24,7 @@ function App() {
       <div style={{ width: 'calc(100vw - 200px)', margin: ' 0 auto' }}>
         <Table
           id={'table_accounts_people'}
-          itemTypeName='user'
+          dataTypeKey='user'
           data={peopleData}
         />
       </div>
