@@ -1,16 +1,12 @@
-import {
-  useReactTable,
-  getCoreRowModel,
-  TableState,
-} from '@tanstack/react-table';
+import { useReactTable, getCoreRowModel } from '@tanstack/react-table';
 
 import { useColumnDef } from './useColumnDef';
 import { AnyDataType, AnyDataTypeKey } from './index.types';
 import { useTableVisibility } from './useColumnVisibility';
 import Header from './Header';
 import Body from './Body';
-import { Dispatch, SetStateAction, useRef, useState } from 'react';
-import { useGetTableSizes, useTableSizing } from './useTableSizing';
+import { Dispatch, SetStateAction, useRef } from 'react';
+import { useTableSizing } from './useTableSizing';
 
 interface TableProps {
   id: string;
@@ -22,7 +18,7 @@ interface TableProps {
 
 const Table = ({ id, dataTypeKey, data }: TableProps) => {
   const tableRef = useRef<HTMLTableElement>(null);
-  const [sizing, onResize, setSizingInfo] = useTableSizing(id, dataTypeKey);
+  const [sizing, onResize, setSizingInfo] = useTableSizing(id);
 
   const [columnVisibility, setColumnVisibility] = useTableVisibility(
     id,
