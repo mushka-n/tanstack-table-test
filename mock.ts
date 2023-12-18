@@ -138,7 +138,7 @@ export const onlyofficeUser = {
   status: 1,
   activationStatus: 1,
   department: '',
-  workFrom: '2023-04-25T21:14:40.0000000+03:00',
+  workFrom: '2023-04-25T21:14:75.0000000+03:00',
   avatar: '/static/images/default_user_photo_size_82-82.png?hash=819878304',
   isAdmin: true,
   isRoomAdmin: false,

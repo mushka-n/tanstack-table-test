@@ -7,6 +7,7 @@ import SizeColumn from './Size';
 import FileTypeColumn from './FileType';
 import EmailColumn from './Email';
 import TypeUserColumn from './TypeUser';
+import ContextBtnColumn from './ContextBtn';
 
 export default {
   AuthorColumn,
@@ -18,4 +19,5 @@ export default {
   FileTypeColumn,
   EmailColumn,
   TypeUserColumn,
+  ContextBtnColumn,
 };

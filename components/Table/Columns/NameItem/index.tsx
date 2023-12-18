@@ -1,12 +1,12 @@
-import { CellContext } from '@tanstack/react-table';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { AccessorKeys } from '../../index.constants';
 import { DSFile } from '../../../../types/DSItems/DSFile';
 
-const DEFAULT_SIZE = 120;
-const MIN_SIZE = 80;
-const MAX_SIZE = 480;
+const DEFAULT_SIZE = undefined;
+const MIN_SIZE = 10;
+const MAX_SIZE = 100;
 
-const NameItemColumn = (savedColumnSize?: number) => {
+const NameItemColumn = (savedColumnSize?: number): ColumnDef<DSFile, never> => {
   return {
     accessorKey: AccessorKeys.NameItem,
     header: 'Name',

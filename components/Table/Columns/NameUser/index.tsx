@@ -2,9 +2,9 @@ import { CellContext } from '@tanstack/react-table';
 import { AccessorKeys } from '../../index.constants';
 import { DSUser } from '../../../../types/DSUsers/DSUser';
 
-const DEFAULT_SIZE = 120;
-const MIN_SIZE = 80;
-const MAX_SIZE = 480;
+const DEFAULT_SIZE = undefined;
+const MIN_SIZE = 10;
+const MAX_SIZE = 100;
 
 const NameUserColumn = (savedColumnSize?: number) => {
   return {
