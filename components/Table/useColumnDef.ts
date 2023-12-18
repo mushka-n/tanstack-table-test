@@ -11,7 +11,7 @@ export const useColumnDef = (
   tableId: string,
   dataTypeKey: AnyDataTypeKey = 'file'
 ): ColumnDef<DSFile, never>[] | ColumnDef<DSUser, never>[] => {
-  const columnSizes = useGetTableSizes(tableId);
+  const columnSizes = useGetTableSizes(tableId, dataTypeKey);
 
   if (dataTypeKey === 'file') return getFileColumnDef(columnSizes);
   return getUserColumnDef(columnSizes);
@@ -27,6 +27,7 @@ const getFileColumnDef = (
     Columns.DateUpdatedColumn(columnSizes?.[AccessorKeys.DateUpdated]),
     Columns.SizeColumn(columnSizes?.[AccessorKeys.SizeFile]),
     Columns.FileTypeColumn(columnSizes?.[AccessorKeys.TypeFile]),
+    Columns.ContextBtnColumn(),
   ];
 };
 
@@ -37,5 +38,6 @@ const getUserColumnDef = (
     Columns.NameUserColumn(columnSizes?.[AccessorKeys.NameUser]),
     Columns.TypeUserColumn(columnSizes?.[AccessorKeys.TypeUser]),
     Columns.EmailColumn(columnSizes?.[AccessorKeys.Email]),
+    Columns.ContextBtnColumn(),
   ];
 };

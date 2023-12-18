@@ -19,7 +19,13 @@ export const useTableVisibility = (
     columnVisibilityUpdater: TableUpdater<VisibilityState>
   ) => {
     setColumnVisibility(columnVisibilityUpdater);
-    onSaveColumnVisibility(tableId, dataTypeKey, columnVisibilityUpdater);
+
+    localStorage.setItem(
+      'tablesVisibilityData',
+      // @ts-expect-error: Type error from library
+      JSON.stringify({ ...columnVisibility, ...columnVisibilityUpdater() })
+    );
+    // onSaveColumnVisibility(tableId, dataTypeKey, columnVisibilityUpdater);
   };
 
   return [columnVisibility, setColumnVisibilityCustom];
@@ -33,7 +39,6 @@ const onGetTablesVisibilityData = (): Record<
 > | null => {
   const tablesDataLS = localStorage.getItem('tablesVisibilityData');
   if (!tablesDataLS) return null;
-
   return JSON.parse(tablesDataLS);
 };
 
@@ -42,7 +47,6 @@ export const onGetColumnVisibility = (
   dataTypeKey: AnyDataTypeKey
 ): VisibilityState => {
   const tablesData = onGetTablesVisibilityData();
-
   if (!tablesData?.[tableId]) return getDefaultVisibility(dataTypeKey);
   return tablesData[tableId];
 };

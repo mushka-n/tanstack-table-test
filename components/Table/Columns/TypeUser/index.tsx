@@ -6,9 +6,9 @@ import {
   getDSUserRoleTranslation,
 } from '../../../../types/DSUsers/DSUserRole';
 
-const DEFAULT_SIZE = 120;
-const MIN_SIZE = 80;
-const MAX_SIZE = 480;
+const DEFAULT_SIZE = undefined;
+const MIN_SIZE = 10;
+const MAX_SIZE = 100;
 
 const TypeUserColumn = (savedColumnSize?: number) => {
   return {
