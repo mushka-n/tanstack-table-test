@@ -12,7 +12,7 @@ export const useTableVisibility = (
   dataTypeKey: AnyDataTypeKey
 ): [VisibilityState, OnChangeFn<VisibilityState>] => {
   const [columnVisibility, setColumnVisibility] = useState(
-    onGetColumnVisibility(tableId, dataTypeKey)
+    getColumnVisibility(tableId, dataTypeKey)
   );
 
   const setColumnVisibilityCustom = (
@@ -25,43 +25,37 @@ export const useTableVisibility = (
       // @ts-expect-error: Type error from library
       JSON.stringify({ ...columnVisibility, ...columnVisibilityUpdater() })
     );
-    // onSaveColumnVisibility(tableId, dataTypeKey, columnVisibilityUpdater);
+    // saveColumnVisibility(tableId, dataTypeKey, columnVisibilityUpdater);
   };
 
   return [columnVisibility, setColumnVisibilityCustom];
 };
 
 // Local Storage Manipulation
-
-const onGetTablesVisibilityData = (): Record<
-  string,
-  VisibilityState
-> | null => {
-  const tablesDataLS = localStorage.getItem('tablesVisibilityData');
-  if (!tablesDataLS) return null;
-  return JSON.parse(tablesDataLS);
-};
-
-export const onGetColumnVisibility = (
+export const getColumnVisibility = (
   tableId: string,
   dataTypeKey: AnyDataTypeKey
 ): VisibilityState => {
-  const tablesData = onGetTablesVisibilityData();
+  const tablesDataLS = localStorage.getItem('tablesSizingData');
+  const tablesData = tablesDataLS && JSON.parse(tablesDataLS);
+
   if (!tablesData?.[tableId]) return getDefaultVisibility(dataTypeKey);
   return tablesData[tableId];
 };
 
-export const onSaveColumnVisibility = (
+export const saveColumnVisibility = (
   tableId: string,
   dataTypeKey: AnyDataTypeKey,
   columnVisibilityUpdater: TableUpdater<VisibilityState>
 ) => {
   if (typeof columnVisibilityUpdater !== 'function') return;
-  const columnVisibility = columnVisibilityUpdater({});
-  const [columnId] = Object.keys(columnVisibility);
-  const [columnValue] = Object.values(columnVisibility);
 
-  let tablesData = onGetTablesVisibilityData();
+  const visibility = columnVisibilityUpdater({});
+  const [columnId] = Object.keys(visibility);
+  const [columnValue] = Object.values(visibility);
+
+  const tablesDataLS = localStorage.getItem('tablesSizingData');
+  let tablesData = tablesDataLS && JSON.parse(tablesDataLS);
 
   if (!tablesData?.[tableId]) {
     const updatedDefaultVisibility = {

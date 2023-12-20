@@ -11,25 +11,19 @@ import { useState } from 'react';
 import { getDefaultSizing } from './index.constants';
 
 const sumFloats = (a: number, b: number) => +(a + b).toFixed(12);
-
 const minSize = 10;
 
 export const useTableSizing = (
-  tableId: string
+  tableId: string,
+  dataTypeKey: AnyDataTypeKey
 ): [
   ColumnSizingState,
   OnChangeFn<ColumnSizingState>,
   OnChangeFn<ColumnSizingInfoState>,
 ] => {
-  const [sizing, setSizing] = useState<ColumnSizingState>({
-    title: 20,
-    createdBy: 0,
-    created: 20,
-    updated: 20,
-    contentLength: 20,
-    fileType: 20,
-    contextBtn: 0,
-  });
+  const [sizing, setSizing] = useState<ColumnSizingState>(
+    getTableSizing(tableId, dataTypeKey)
+  );
 
   const [sizingInfo, setSizingInfo] = useState<ColumnSizingInfoState>({
     columnSizingStart: [],
@@ -65,15 +59,14 @@ export const useTableSizing = (
     const leftEntries = entries.slice(0, columnIndex);
     const rightEntries = entries.slice(columnIndex + 1);
 
+    const maxColumnSize =
+      100 +
+      minSize -
+      entries.reduce((acc, ent) => acc + (ent[1] && minSize), 0);
+
     let newColumnSize = sumFloats(columnSize, delta);
     if (newColumnSize < minSize) newColumnSize = minSize;
-
-    const maxColumnSize =
-      100 -
-      entries.reduce((acc, ent) => acc + (ent[1] && minSize), 0) +
-      minSize;
-    if (newColumnSize > maxColumnSize) return;
-    if (delta > maxColumnSize - columnSize) return;
+    if (newColumnSize > maxColumnSize) newColumnSize = maxColumnSize;
 
     const newSizing = { ...sizing };
     newSizing[columnKey] = newColumnSize;
@@ -105,7 +98,7 @@ export const useTableSizing = (
     // Moving separator left, columnSize <= minSize:
     // rightmost column to the left (with size > minSize) gets smaller by delta
     // leftmost column to the right gets bigger by delta
-    else if (delta < 0 && oldDelta > delta && newColumnSize <= minSize) {
+    if (delta < 0 && oldDelta > delta && newColumnSize === minSize) {
       const avialLeftEntries = leftEntries.filter((ent) => ent[1] > minSize);
       if (!avialLeftEntries.length) return;
 
@@ -130,7 +123,7 @@ export const useTableSizing = (
     }
 
     setSizing(newSizing);
-    console.log('sizing: ', sizing, '\n', 'sizingInfo: ', sizingInfo);
+    saveTableSizing(tableId, newSizing);
   };
 
   const setSizingInfoCustom = (
@@ -143,32 +136,26 @@ export const useTableSizing = (
   return [sizing, onResize, setSizingInfoCustom];
 };
 
-const getTablesData = (): Record<string, Record<string, number>> | null => {
-  const tablesDataLS = localStorage.getItem('tablesSizingData');
-  if (!tablesDataLS) return null;
-  return JSON.parse(tablesDataLS);
-};
-
-export const useGetTableSizes = (
+export const getTableSizing = (
   tableId: string,
   dataTypeKey: AnyDataTypeKey
-): Record<string, number> | null => {
-  const tablesData = getTablesData();
+): ColumnSizingState => {
+  const tablesDataLS = localStorage.getItem('tablesSizingData');
+  const tablesData = tablesDataLS && JSON.parse(tablesDataLS);
 
-  if (!tablesData?.[tableId]) {
-    return getDefaultSizing(dataTypeKey);
-  }
+  if (!tablesData?.[tableId]) return getDefaultSizing(dataTypeKey);
   return tablesData[tableId];
 };
 
-export const saveTableSizes = throttle(
+export const saveTableSizing = throttle(
   (tableId: string, sizingState: ColumnSizingState) => {
-    let tablesSizingData = getTablesData();
+    const tablesDataLS = localStorage.getItem('tablesSizingData');
 
-    if (!tablesSizingData) tablesSizingData = { [tableId]: sizingState };
-    else tablesSizingData[tableId] = sizingState;
+    let tablesData = tablesDataLS && JSON.parse(tablesDataLS);
+    if (!tablesData) tablesData = { [tableId]: sizingState };
+    else tablesData[tableId] = sizingState;
 
-    localStorage.setItem('tablesSizingData', JSON.stringify(tablesSizingData));
+    localStorage.setItem('tablesSizingData', JSON.stringify(tablesData));
   },
   500
 );

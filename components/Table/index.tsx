@@ -18,12 +18,9 @@ interface TableProps {
 
 const Table = ({ id, dataTypeKey, data }: TableProps) => {
   const tableRef = useRef<HTMLTableElement>(null);
-  const [sizing, onResize, setSizingInfo] = useTableSizing(id);
 
-  const [columnVisibility, setColumnVisibility] = useTableVisibility(
-    id,
-    dataTypeKey
-  );
+  const [sizing, onResize, setSizingInfo] = useTableSizing(id, dataTypeKey);
+  const [visibility, setVisibility] = useTableVisibility(id, dataTypeKey);
 
   const table = useReactTable({
     data,
@@ -34,10 +31,10 @@ const Table = ({ id, dataTypeKey, data }: TableProps) => {
     getCoreRowModel: getCoreRowModel(),
     state: {
       columnSizing: sizing,
-      columnVisibility,
+      columnVisibility: visibility,
     },
     columnResizeMode: 'onChange',
-    onColumnVisibilityChange: setColumnVisibility,
+    onColumnVisibilityChange: setVisibility,
     onColumnSizingChange: onResize,
     onColumnSizingInfoChange: setSizingInfo,
     enableRowSelection: true,

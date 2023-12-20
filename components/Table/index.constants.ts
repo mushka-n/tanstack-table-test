@@ -20,37 +20,31 @@ const FileItemColumnData = Object.freeze({
     isDefaultVisible: true,
     defaultSize: 20,
     minSize: 10,
-    maxSize: 80,
   },
   [AccessorKeys.FileAuthorUser]: {
     isDefaultVisible: false,
     defaultSize: 20,
     minSize: 10,
-    maxSize: 80,
   },
   [AccessorKeys.DateCreated]: {
     isDefaultVisible: true,
     defaultSize: 20,
     minSize: 10,
-    maxSize: 80,
   },
   [AccessorKeys.DateUpdated]: {
     isDefaultVisible: true,
     defaultSize: 20,
     minSize: 10,
-    maxSize: 80,
   },
   [AccessorKeys.SizeFile]: {
     isDefaultVisible: true,
     defaultSize: 20,
     minSize: 10,
-    maxSize: 80,
   },
   [AccessorKeys.TypeFile]: {
     isDefaultVisible: true,
     defaultSize: 20,
     minSize: 10,
-    maxSize: 80,
   },
   [AccessorKeys.ContextBtn]: {
     isDefaultVisible: true,
@@ -65,19 +59,16 @@ const UserItemColumnData = Object.freeze({
     isDefaultVisible: true,
     defaultSize: 20,
     minSize: 10,
-    maxSize: 80,
   },
   [AccessorKeys.TypeUser]: {
     isDefaultVisible: true,
     defaultSize: 20,
     minSize: 10,
-    maxSize: 80,
   },
   [AccessorKeys.Email]: {
     isDefaultVisible: true,
     defaultSize: 20,
     minSize: 10,
-    maxSize: 80,
   },
   [AccessorKeys.ContextBtn]: {
     isDefaultVisible: true,
@@ -97,19 +88,30 @@ export const getDefaultVisibility = (dataTypeKey: AnyDataTypeKey) => {
 
   let result = {};
   Object.entries(columnData).forEach(
-    ([accessorKey, data]) =>
-      (result = { ...result, [accessorKey]: data.isDefaultVisible })
+    ([key, data]) => (result = { ...result, [key]: data.isDefaultVisible })
   );
   return result;
 };
 
 export const getDefaultSizing = (dataTypeKey: AnyDataTypeKey) => {
   const columnData = TableDefaultColumnData[dataTypeKey];
+  const columnEntries = Object.entries(columnData);
+
+  const visibleColumnsNum = columnEntries.filter(
+    ([key, data]) => key !== AccessorKeys.ContextBtn && data.isDefaultVisible
+  ).length;
 
   let result = {};
-  Object.entries(columnData).forEach(
-    ([accessorKey, data]) =>
-      (result = { ...result, [accessorKey]: data.defaultSize })
+  columnEntries.forEach(
+    ([key, data]) =>
+      data.isDefaultVisible &&
+      (result = {
+        ...result,
+        [key]:
+          key !== AccessorKeys.ContextBtn && data.isDefaultVisible
+            ? 100 / visibleColumnsNum
+            : 0,
+      })
   );
   return result;
 };

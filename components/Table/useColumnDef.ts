@@ -1,17 +1,17 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { AccessorKeys } from './index.constants';
 import { AnyDataTypeKey } from './index.types';
-import { useGetTableSizes } from './useTableSizing';
 
 import Columns from './Columns';
 import { DSFile } from '../../types/DSItems/DSFile';
 import { DSUser } from '../../types/DSUsers/DSUser';
+import { getTableSizing } from './useTableSizing';
 
 export const useColumnDef = (
   tableId: string,
   dataTypeKey: AnyDataTypeKey = 'file'
 ): ColumnDef<DSFile, never>[] | ColumnDef<DSUser, never>[] => {
-  const columnSizes = useGetTableSizes(tableId, dataTypeKey);
+  const columnSizes = getTableSizing(tableId, dataTypeKey);
 
   if (dataTypeKey === 'file') return getFileColumnDef(columnSizes);
   return getUserColumnDef(columnSizes);
