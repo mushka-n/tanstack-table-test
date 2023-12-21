@@ -1,43 +1,38 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { AccessorKeys } from './index.constants';
 import { AnyDataTypeKey } from './index.types';
 
 import Columns from './Columns';
 import { DSFile } from '../../types/DSItems/DSFile';
 import { DSUser } from '../../types/DSUsers/DSUser';
-import { getTableSizing } from './useTableSizing';
 
 export const useColumnDef = (
-  tableId: string,
-  dataTypeKey: AnyDataTypeKey = 'file'
+  dataTypeKey: AnyDataTypeKey
 ): ColumnDef<DSFile, never>[] | ColumnDef<DSUser, never>[] => {
-  const columnSizes = getTableSizing(tableId, dataTypeKey);
-
-  if (dataTypeKey === 'file') return getFileColumnDef(columnSizes);
-  return getUserColumnDef(columnSizes);
+  switch (dataTypeKey) {
+    case 'file':
+      return getFileColumnDef();
+    case 'user':
+      return getUserColumnDef();
+  }
 };
 
-const getFileColumnDef = (
-  columnSizes: Record<string, number> | null
-): ColumnDef<DSFile, never>[] => {
+const getFileColumnDef = (): ColumnDef<DSFile, never>[] => {
   return [
-    Columns.NameItemColumn(columnSizes?.[AccessorKeys.NameItem]),
-    Columns.AuthorColumn(columnSizes?.[AccessorKeys.FileAuthorUser]),
-    Columns.CreatedDateColumn(columnSizes?.[AccessorKeys.DateCreated]),
-    Columns.DateUpdatedColumn(columnSizes?.[AccessorKeys.DateUpdated]),
-    Columns.SizeColumn(columnSizes?.[AccessorKeys.SizeFile]),
-    Columns.FileTypeColumn(columnSizes?.[AccessorKeys.TypeFile]),
+    Columns.NameItemColumn(),
+    Columns.AuthorColumn(),
+    Columns.CreatedDateColumn(),
+    Columns.DateUpdatedColumn(),
+    Columns.SizeColumn(),
+    Columns.FileTypeColumn(),
     Columns.ContextBtnColumn(),
   ];
 };
 
-const getUserColumnDef = (
-  columnSizes: Record<string, number> | null
-): ColumnDef<DSUser, never>[] => {
+const getUserColumnDef = (): ColumnDef<DSUser, never>[] => {
   return [
-    Columns.NameUserColumn(columnSizes?.[AccessorKeys.NameUser]),
-    Columns.TypeUserColumn(columnSizes?.[AccessorKeys.TypeUser]),
-    Columns.EmailColumn(columnSizes?.[AccessorKeys.Email]),
+    Columns.NameUserColumn(),
+    Columns.TypeUserColumn(),
+    Columns.EmailColumn(),
     Columns.ContextBtnColumn(),
   ];
 };

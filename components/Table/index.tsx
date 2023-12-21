@@ -25,9 +25,9 @@ const Table = ({ id, dataTypeKey, data }: TableProps) => {
   const table = useReactTable({
     data,
     // @ts-expect-error: -
-    // ColumnDef generic can't understand the difference between AnyDataType and (DSFile | DSUser | ...) ,
+    // ColumnDef generic can't understand the difference between AnyDataType and (DSFile | DSUser | ...),
     // but table data doesn't accept union types
-    columns: useColumnDef(id, dataTypeKey),
+    columns: useColumnDef(dataTypeKey),
     getCoreRowModel: getCoreRowModel(),
     state: {
       columnSizing: sizing,
@@ -69,12 +69,7 @@ const Table = ({ id, dataTypeKey, data }: TableProps) => {
           height: 'max-content  ',
         }}
       >
-        <Header
-          tableId={id}
-          table={table}
-          tableRef={tableRef}
-          sizing={sizing}
-        />
+        <Header tableRef={tableRef} table={table} sizing={sizing} />
         <Body table={table} />
       </table>
     </>

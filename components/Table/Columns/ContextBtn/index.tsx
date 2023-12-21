@@ -1,17 +1,12 @@
 import { AccessorKeys } from '../../index.constants';
 
-const DEFAULT_SIZE = 16;
-const MIN_SIZE = 16;
-const MAX_SIZE = 16;
-
-const ContextBtnColumn = (savedColumnSize?: number) => {
+const ContextBtnColumn = () => {
   return {
     accessorKey: AccessorKeys.ContextBtn,
     header: '|',
 
-    size: savedColumnSize ?? DEFAULT_SIZE,
-    minSize: MIN_SIZE,
-    maxSize: MAX_SIZE,
+    size: 0,
+    enableHiding: false,
 
     cell: () => {
       return <div style={{ width: '16px' }}>|</div>;

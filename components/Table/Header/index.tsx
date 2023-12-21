@@ -4,18 +4,12 @@ import { AccessorKeys } from '../index.constants';
 import { useLayoutEffect, useState } from 'react';
 
 interface TableHeaderProps {
-  tableId: string;
   table: Table<AnyDataType>;
   sizing: ColumnSizingState;
   tableRef: React.RefObject<HTMLTableElement>;
 }
 
-const TableHeader = ({
-  tableRef,
-  tableId,
-  table,
-  sizing,
-}: TableHeaderProps) => {
+const TableHeader = ({ tableRef, table, sizing }: TableHeaderProps) => {
   const [headerGroup] = table.getHeaderGroups();
   const [tableWidth, setTableWidth] = useState(0);
 
@@ -30,18 +24,16 @@ const TableHeader = ({
   return (
     <thead>
       <tr>
-        {table.getHeaderGroups()[0].headers.map((header, index) => (
+        {table.getHeaderGroups()[0].headers.map((header, headerIndex) => (
           <th
             key={header.id}
             colSpan={1}
             style={
               header.id !== AccessorKeys.ContextBtn
                 ? {
-                    width: tableWidth
-                      ? `${(sizing[header.id] * (tableWidth - 16)) / 100}px`
-                      : `${sizing[header.id]}%`,
-                    minWidth: '10%',
                     position: 'relative',
+                    width: `${(sizing[header.id] * (tableWidth - 16)) / 100}px`,
+                    minWidth: '10%',
                   }
                 : {
                     width: `min-content`,
@@ -55,10 +47,7 @@ const TableHeader = ({
                 header.id !== AccessorKeys.ContextBtn
                   ? {
                       width: '100%',
-                      minWidth: tableWidth
-                        ? `${(tableWidth - 16) / 10}px`
-                        : '100%',
-                      maxWidth: '100%',
+                      minWidth: `${(tableWidth - 16) / 10}px`,
                     }
                   : {
                       width: `16px`,
@@ -69,7 +58,7 @@ const TableHeader = ({
             >
               {flexRender(header.column.columnDef.header, header.getContext())}
             </div>
-            {index + 2 < headerGroup.headers.length && (
+            {headerIndex < headerGroup.headers.length - 2 && (
               <div
                 onMouseDown={header.getResizeHandler()}
                 onTouchStart={header.getResizeHandler()}
@@ -96,7 +85,7 @@ const TableHeader = ({
                     userSelect: 'none',
                     touchAction: 'none',
                   }}
-                ></div>
+                />
               </div>
             )}
           </th>
