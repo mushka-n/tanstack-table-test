@@ -15,6 +15,8 @@ export const AccessorKeys = Object.freeze({
   TypeUser: 'role',
 });
 
+export const TABLE_MIN_SIZE = 10;
+
 const FileItemColumnData = Object.freeze({
   [AccessorKeys.NameItem]: {
     isDefaultVisible: true,
@@ -83,6 +85,11 @@ export const TableDefaultColumnData = Object.freeze({
   user: UserItemColumnData,
 });
 
+export const getAccessorKeys = (dataTypeKey: AnyDataTypeKey) => {
+  const columnData = TableDefaultColumnData[dataTypeKey];
+  return Object.keys(columnData);
+};
+
 export const getDefaultVisibility = (dataTypeKey: AnyDataTypeKey) => {
   const columnData = TableDefaultColumnData[dataTypeKey];
 
@@ -114,9 +121,4 @@ export const getDefaultSizing = (dataTypeKey: AnyDataTypeKey) => {
       })
   );
   return result;
-};
-
-export const getAccessorKeys = (dataTypeKey: AnyDataTypeKey) => {
-  const columnData = TableDefaultColumnData[dataTypeKey];
-  return Object.keys(columnData);
 };
