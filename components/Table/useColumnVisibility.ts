@@ -36,7 +36,7 @@ export const getColumnVisibility = (
   tableId: string,
   dataTypeKey: AnyDataTypeKey
 ): VisibilityState => {
-  const tablesDataLS = localStorage.getItem('tablesSizingData');
+  const tablesDataLS = localStorage.getItem('tablesVisibilityData');
   const tablesData = tablesDataLS && JSON.parse(tablesDataLS);
 
   if (!tablesData?.[tableId]) return getDefaultVisibility(dataTypeKey);
@@ -51,10 +51,11 @@ export const saveColumnVisibility = (
   if (typeof columnVisibilityUpdater !== 'function') return;
 
   const visibility = columnVisibilityUpdater({});
+
   const [columnId] = Object.keys(visibility);
   const [columnValue] = Object.values(visibility);
 
-  const tablesDataLS = localStorage.getItem('tablesSizingData');
+  const tablesDataLS = localStorage.getItem('tablesVisibilityData');
   let tablesData = tablesDataLS && JSON.parse(tablesDataLS);
 
   if (!tablesData?.[tableId]) {
