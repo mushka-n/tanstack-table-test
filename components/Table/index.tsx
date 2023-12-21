@@ -26,7 +26,7 @@ const Table = ({ id, dataTypeKey, data }: TableProps) => {
     data,
     // @ts-expect-error: -
     // ColumnDef generic can't understand the difference between AnyDataType and (DSFile | DSUser | ...) ,
-    // but table data can only be provided as a single type
+    // but table data doesn't accept union types
     columns: useColumnDef(id, dataTypeKey),
     getCoreRowModel: getCoreRowModel(),
     state: {

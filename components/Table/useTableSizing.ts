@@ -1,3 +1,4 @@
+import { sumFloats } from './../../utils/sumFloats';
 import { throttle } from 'lodash';
 import {
   ColumnSizingInfoState,
@@ -9,8 +10,6 @@ import {
 import { AnyDataTypeKey } from './index.types';
 import { useState } from 'react';
 import { TABLE_MIN_SIZE, getDefaultSizing } from './index.constants';
-
-const sumFloats = (a: number, b: number) => +(a + b).toFixed(12);
 
 const minSize = TABLE_MIN_SIZE;
 
