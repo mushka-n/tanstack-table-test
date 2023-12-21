@@ -20,63 +20,39 @@ export const TABLE_MIN_SIZE = 10;
 const FileItemColumnData = Object.freeze({
   [AccessorKeys.NameItem]: {
     isDefaultVisible: true,
-    defaultSize: 20,
-    minSize: 10,
   },
   [AccessorKeys.FileAuthorUser]: {
     isDefaultVisible: false,
-    defaultSize: 20,
-    minSize: 10,
   },
   [AccessorKeys.DateCreated]: {
     isDefaultVisible: true,
-    defaultSize: 20,
-    minSize: 10,
   },
   [AccessorKeys.DateUpdated]: {
     isDefaultVisible: true,
-    defaultSize: 20,
-    minSize: 10,
   },
   [AccessorKeys.SizeFile]: {
     isDefaultVisible: true,
-    defaultSize: 20,
-    minSize: 10,
   },
   [AccessorKeys.TypeFile]: {
     isDefaultVisible: true,
-    defaultSize: 20,
-    minSize: 10,
   },
   [AccessorKeys.ContextBtn]: {
     isDefaultVisible: true,
-    defaultSize: 16,
-    minSize: 16,
-    maxSize: 16,
   },
 });
 
 const UserItemColumnData = Object.freeze({
   [AccessorKeys.NameUser]: {
     isDefaultVisible: true,
-    defaultSize: 20,
-    minSize: 10,
   },
   [AccessorKeys.TypeUser]: {
     isDefaultVisible: true,
-    defaultSize: 20,
-    minSize: 10,
   },
   [AccessorKeys.Email]: {
     isDefaultVisible: true,
-    defaultSize: 20,
-    minSize: 10,
   },
   [AccessorKeys.ContextBtn]: {
     isDefaultVisible: true,
-    defaultSize: 16,
-    minSize: 16,
-    maxSize: 16,
   },
 });
 
@@ -108,17 +84,13 @@ export const getDefaultSizing = (dataTypeKey: AnyDataTypeKey) => {
     ([key, data]) => key !== AccessorKeys.ContextBtn && data.isDefaultVisible
   ).length;
 
-  let result = {};
+  const result: { [key: string]: number } = {};
   columnEntries.forEach(
     ([key, data]) =>
-      data.isDefaultVisible &&
-      (result = {
-        ...result,
-        [key]:
-          key !== AccessorKeys.ContextBtn && data.isDefaultVisible
-            ? 100 / visibleColumnsNum
-            : 0,
-      })
+      (result[key] =
+        key !== AccessorKeys.ContextBtn && data.isDefaultVisible
+          ? 100 / visibleColumnsNum
+          : 0)
   );
   return result;
 };

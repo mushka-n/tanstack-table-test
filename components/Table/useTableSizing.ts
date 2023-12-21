@@ -12,6 +12,8 @@ import { TABLE_MIN_SIZE, getDefaultSizing } from './index.constants';
 
 const sumFloats = (a: number, b: number) => +(a + b).toFixed(12);
 
+const minSize = TABLE_MIN_SIZE;
+
 export const useTableSizing = (
   tableId: string,
   dataTypeKey: AnyDataTypeKey
@@ -66,67 +68,54 @@ export const useTableSizing = (
     const leftEntries = entries.slice(0, columnIndex);
     const rightEntries = entries.slice(columnIndex + 1);
 
-    const maxColumnSize =
+    const maxSize =
       100 +
-      TABLE_MIN_SIZE -
-      entries.reduce((acc, ent) => acc + (ent[1] && TABLE_MIN_SIZE), 0);
+      minSize -
+      entries.reduce((acc, ent) => acc + (ent[1] && minSize), 0);
 
     let newColumnSize = sumFloats(sizing[columnKey], delta);
-    if (newColumnSize < TABLE_MIN_SIZE) newColumnSize = TABLE_MIN_SIZE;
-    if (newColumnSize > maxColumnSize) newColumnSize = maxColumnSize;
+    if (newColumnSize < minSize) newColumnSize = minSize;
+    if (newColumnSize > maxSize) newColumnSize = maxSize;
 
     const newSizing = { ...sizing };
     newSizing[columnKey] = newColumnSize;
 
     // Moving separator right:
-    // leftmost column with width > TABLE_MIN_SIZE gets smaller by deltaGlobal
+    // leftmost column with width > minSize gets smaller by delta
     if (offsetGlobal > 0 && oldDeltaGlobal < deltaGlobal) {
-      const avialEntries = rightEntries.filter(
-        (ent) => ent[1] > TABLE_MIN_SIZE
-      );
+      const avialEntries = rightEntries.filter((ent) => ent[1] > minSize);
       if (!avialEntries.length) return;
 
       const compEntry = avialEntries[0];
       let compEntrySize = sumFloats(compEntry[1], -delta);
-      if (compEntrySize < TABLE_MIN_SIZE) compEntrySize = TABLE_MIN_SIZE;
+      if (compEntrySize < minSize) compEntrySize = minSize;
       newSizing[compEntry[0]] = compEntrySize;
     }
 
-    // Moving separator right after pushing another column to the left
-    else if (
-      offsetGlobal < 0 &&
-      oldDeltaGlobal < deltaGlobal &&
-      newColumnSize <= TABLE_MIN_SIZE
-    ) {
-      newSizing[columnKey] = TABLE_MIN_SIZE + delta;
-    }
-
-    // Moving separator left, columnSize > TABLE_MIN_SIZE:
-    // leftmost column to the right gets bigger by deltaGlobal
+    // Moving separator left:
+    // leftmost column to the right gets bigger by delta
     else if (
       (offsetGlobal < 0 || oldDeltaGlobal > deltaGlobal) &&
-      newColumnSize > TABLE_MIN_SIZE
+      newColumnSize > minSize
     ) {
       const avialEntries = rightEntries.filter((ent) => ent[1] > 0);
       if (!avialEntries.length) return;
 
       const compEntry = avialEntries[0];
       let compEntrySize = sumFloats(compEntry[1], -delta);
-      if (compEntrySize < TABLE_MIN_SIZE) compEntrySize = TABLE_MIN_SIZE;
+      if (compEntrySize > maxSize) compEntrySize = maxSize;
       newSizing[compEntry[0]] = compEntrySize;
     }
 
-    // Moving separator left, columnSize <= TABLE_MIN_SIZE:
-    // rightmost column to the left (with size > TABLE_MIN_SIZE) gets smaller by deltaGlobal
-    // leftmost column to the right gets bigger by deltaGlobal
+    // Moving separator left and pushing other columns with it:
+    // rightmost column to the left (with size > minSize) gets smaller by delta
+    // leftmost column to the right gets bigger by delta
     else if (
       offsetGlobal < 0 &&
       oldDeltaGlobal > deltaGlobal &&
-      newColumnSize <= TABLE_MIN_SIZE
+      newColumnSize <= minSize
     ) {
-      const avialLeftEntries = leftEntries.filter(
-        (ent) => ent[1] > TABLE_MIN_SIZE
-      );
+      const avialLeftEntries = leftEntries.filter((ent) => ent[1] > minSize);
       if (!avialLeftEntries.length) return;
 
       const avialRightEntries = rightEntries.filter((ent) => ent[1] > 0);
@@ -134,14 +123,12 @@ export const useTableSizing = (
 
       const compLeftEntry = avialLeftEntries.pop()!;
       let compLeftEntrySize = sumFloats(compLeftEntry[1], delta);
-      if (compLeftEntrySize < TABLE_MIN_SIZE)
-        compLeftEntrySize = TABLE_MIN_SIZE;
+      if (compLeftEntrySize < minSize) compLeftEntrySize = minSize;
       newSizing[compLeftEntry[0]] = compLeftEntrySize;
 
       const compRightEntry = avialRightEntries[0];
       let compRightEntrySize = sumFloats(compRightEntry[1], -delta);
-      if (compRightEntrySize < TABLE_MIN_SIZE)
-        compRightEntrySize = TABLE_MIN_SIZE;
+      if (compRightEntrySize < minSize) compRightEntrySize = minSize;
       newSizing[compRightEntry[0]] = compRightEntrySize;
     }
 
@@ -159,7 +146,6 @@ export const useTableSizing = (
       newSizing[maxEntry[0]] = 100 + sumFloats(maxEntry[1], -sumAll);
     }
 
-    console.log(newSizing);
     setSizing(newSizing);
     saveTableSizing(tableId, newSizing);
   };
