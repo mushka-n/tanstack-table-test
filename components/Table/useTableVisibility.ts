@@ -12,27 +12,20 @@ export const useTableVisibility = (
   dataTypeKey: AnyDataTypeKey
 ): [VisibilityState, OnChangeFn<VisibilityState>] => {
   const [columnVisibility, setColumnVisibility] = useState(
-    getColumnVisibility(tableId, dataTypeKey)
+    getTableVisibility(tableId, dataTypeKey)
   );
 
   const setColumnVisibilityCustom = (
     columnVisibilityUpdater: TableUpdater<VisibilityState>
   ) => {
     setColumnVisibility(columnVisibilityUpdater);
-
-    localStorage.setItem(
-      'tablesVisibilityData',
-      // @ts-expect-error: Type error from library
-      JSON.stringify({ ...columnVisibility, ...columnVisibilityUpdater() })
-    );
-    // saveColumnVisibility(tableId, dataTypeKey, columnVisibilityUpdater);
+    saveTableVisibility(tableId, dataTypeKey, columnVisibilityUpdater);
   };
 
   return [columnVisibility, setColumnVisibilityCustom];
 };
 
-// Local Storage Manipulation
-export const getColumnVisibility = (
+export const getTableVisibility = (
   tableId: string,
   dataTypeKey: AnyDataTypeKey
 ): VisibilityState => {
@@ -43,7 +36,7 @@ export const getColumnVisibility = (
   return tablesData[tableId];
 };
 
-export const saveColumnVisibility = (
+export const saveTableVisibility = (
   tableId: string,
   dataTypeKey: AnyDataTypeKey,
   columnVisibilityUpdater: TableUpdater<VisibilityState>

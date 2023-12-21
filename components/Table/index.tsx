@@ -2,7 +2,7 @@ import { useReactTable, getCoreRowModel } from '@tanstack/react-table';
 
 import { useColumnDef } from './useColumnDef';
 import { AnyDataType, AnyDataTypeKey } from './index.types';
-import { useTableVisibility } from './useColumnVisibility';
+import { useTableVisibility } from './useTableVisibility';
 import Header from './Header';
 import Body from './Body';
 import { Dispatch, SetStateAction, useRef } from 'react';
