@@ -3,34 +3,25 @@ import { throttle } from 'lodash';
 import {
   ColumnSizingInfoState,
   ColumnSizingState,
-  OnChangeFn,
   Updater,
 } from '@tanstack/react-table';
 
 import { AnyDataTypeKey } from './index.types';
 import { useState } from 'react';
-import { TABLE_MIN_SIZE, getDefaultSizing } from './index.constants';
-
-const minSize = TABLE_MIN_SIZE;
+import { TABLE_MIN_SIZE as minSize, getDefaultSizing } from './index.constants';
 
 export const useTableSizing = (
   tableId: string,
   dataTypeKey: AnyDataTypeKey
 ): [
   ColumnSizingState,
-  OnChangeFn<ColumnSizingState>,
-  OnChangeFn<ColumnSizingInfoState>,
+  typeof setSizing,
+  typeof onSizingChange,
+  ColumnSizingInfoState,
+  typeof setSizingInfoCustom,
 ] => {
   const [sizing, setSizing] = useState<ColumnSizingState>(
     getTableSizing(tableId, dataTypeKey)
-    // {
-    //   title: 20,
-    //   created: 20,
-    //   updated: 20,
-    //   contentLength: 20,
-    //   fileType: 20,
-    //   contextBtn: 0,
-    // }
   );
 
   const [sizingInfo, setSizingInfo] = useState<ColumnSizingInfoState>({
@@ -45,7 +36,7 @@ export const useTableSizing = (
   const [oldSizingInfo, setOldSizingInfo] =
     useState<ColumnSizingInfoState>(sizingInfo);
 
-  const onResize = () => {
+  const onSizingChange = () => {
     if (!sizingInfo.deltaOffset) return;
 
     const tableWidth = document
@@ -70,79 +61,95 @@ export const useTableSizing = (
     const maxSize =
       100 +
       minSize -
-      entries.reduce((acc, ent) => acc + (ent[1] && minSize), 0);
+      entries.reduce((acc, [, size]) => acc + (size > 0 ? minSize : 0), 0);
 
-    let newColumnSize = sumFloats(sizing[columnKey], delta);
-    if (newColumnSize < minSize) newColumnSize = minSize;
-    if (newColumnSize > maxSize) newColumnSize = maxSize;
-
+    const rawColumnSize = sumFloats(sizing[columnKey], delta);
+    const columnSize = Math.max(minSize, Math.min(maxSize, rawColumnSize));
+    console.log('aaa', rawColumnSize, columnSize);
     const newSizing = { ...sizing };
-    newSizing[columnKey] = newColumnSize;
+    newSizing[columnKey] = columnSize;
 
-    // Moving separator right:
-    // leftmost column with width > minSize gets smaller by delta
+    // Moving separator RIGHT:
+    // [first column to the right] with (width > minSize) gets smaller by [delta]
     if (offsetGlobal > 0 && oldDeltaGlobal < deltaGlobal) {
-      const avialEntries = rightEntries.filter((ent) => ent[1] > minSize);
+      const avialEntries = rightEntries.filter(([, size]) => size > minSize);
       if (!avialEntries.length) return;
 
-      const compEntry = avialEntries[0];
-      let compEntrySize = sumFloats(compEntry[1], -delta);
-      if (compEntrySize < minSize) compEntrySize = minSize;
-      newSizing[compEntry[0]] = compEntrySize;
+      const compensativeEntry = avialEntries[0];
+      let compensation = sumFloats(compensativeEntry[1], -delta);
+      if (compensation < minSize) compensation = minSize;
+      newSizing[compensativeEntry[0]] = compensation;
     }
 
-    // Moving separator left:
-    // leftmost column to the right gets bigger by delta
+    // Moving separator LEFT by making current column smaller:
+    // [first column to the right] gets bigger by [delta]
     else if (
       (offsetGlobal < 0 || oldDeltaGlobal > deltaGlobal) &&
-      newColumnSize > minSize
+      columnSize > minSize
     ) {
-      const avialEntries = rightEntries.filter((ent) => ent[1] > 0);
+      const avialEntries = rightEntries.filter(([, size]) => size > 0);
       if (!avialEntries.length) return;
 
-      const compEntry = avialEntries[0];
-      let compEntrySize = sumFloats(compEntry[1], -delta);
-      if (compEntrySize > maxSize) compEntrySize = maxSize;
-      newSizing[compEntry[0]] = compEntrySize;
+      const compensativeEntry = avialEntries[0];
+      let compensation = sumFloats(compensativeEntry[1], -delta);
+      if (compensation > maxSize) compensation = maxSize;
+      newSizing[compensativeEntry[0]] = compensation;
     }
 
-    // Moving separator left and pushing other columns with it:
-    // rightmost column to the left (with size > minSize) gets smaller by delta
-    // leftmost column to the right gets bigger by delta
+    // Moving separator LEFT by pushing other columns:
+    // [last column to the left] with (size > minSize) gets smaller by [delta]
+    // [first column to the right] gets bigger by [delta]
     else if (
       offsetGlobal < 0 &&
       oldDeltaGlobal > deltaGlobal &&
-      newColumnSize <= minSize
+      columnSize === minSize
     ) {
-      const avialLeftEntries = leftEntries.filter((ent) => ent[1] > minSize);
+      const avialLeftEntries = leftEntries.filter(([, size]) => size > minSize);
       if (!avialLeftEntries.length) return;
 
-      const avialRightEntries = rightEntries.filter((ent) => ent[1] > 0);
+      const avialRightEntries = rightEntries.filter(([, size]) => size > 0);
       if (!avialRightEntries.length) return;
 
-      const compLeftEntry = avialLeftEntries.pop()!;
-      let compLeftEntrySize = sumFloats(compLeftEntry[1], delta);
-      if (compLeftEntrySize < minSize) compLeftEntrySize = minSize;
-      newSizing[compLeftEntry[0]] = compLeftEntrySize;
+      const compensativeEntryLeft = avialLeftEntries.pop()!;
+      let compensationLeft = sumFloats(compensativeEntryLeft[1], delta);
+      if (compensationLeft < minSize) compensationLeft = minSize;
+      newSizing[compensativeEntryLeft[0]] = compensationLeft;
 
-      const compRightEntry = avialRightEntries[0];
-      let compRightEntrySize = sumFloats(compRightEntry[1], -delta);
-      if (compRightEntrySize < minSize) compRightEntrySize = minSize;
-      newSizing[compRightEntry[0]] = compRightEntrySize;
+      const compensativeEntryRight = avialRightEntries[0];
+      let compensationRight = sumFloats(compensativeEntryRight[1], -delta);
+      if (compensationRight < minSize) compensationRight = minSize;
+      newSizing[compensativeEntryRight[0]] = compensationRight;
+
+      console.log(compensationLeft, compensationRight);
     }
 
-    // If anything breaks and sum of all sizes differs from 100 normalizes it
-    const newEntries = Object.entries(newSizing);
-    const sumAll = newEntries.reduce((acc, entry) => acc + entry[1], 0);
-    if (sumAll < 100) {
-      const lastEntry = newEntries[newEntries.length - 2];
-      newSizing[lastEntry[0]] = 100 + sumFloats(lastEntry[1], -sumAll);
-    } else if (sumAll > 100) {
-      const maxEntry = newEntries.reduce(
-        (max, entry) => (entry[1] > max[1] ? entry : max),
-        newEntries[0]
+    // Normalizes sizing if anything breaks (generally adds/removes 0.01-0.05)
+    // (sometimes needed due to point addition and weird user cases, like moving cursor really fast)
+    // May be removed later after overall sizing mechanism imporvements, but this works fine for now
+    const newEntries = Object.entries(newSizing).filter(([, size]) => size > 0);
+    const sumAll = newEntries.reduce(
+      (acc, [, size]) => sumFloats(acc, size),
+      0
+    );
+
+    if (sumAll !== 100) {
+      console.log('NORMALIZE', sumAll, newSizing);
+      let entryToNormalize: [string, number] = [columnKey, columnSize];
+      if (sumAll < 100 && columnSize === maxSize)
+        entryToNormalize = newEntries.reduce(
+          (min, entry) => (entry[1] < min[1] ? entry : min),
+          newEntries[0]
+        );
+      else if (sumAll > 100 && columnSize === minSize)
+        entryToNormalize = newEntries.reduce(
+          (max, entry) => (entry[1] > max[1] ? entry : max),
+          newEntries[0]
+        );
+      newSizing[entryToNormalize[0]] = sumFloats(
+        100,
+        entryToNormalize[1],
+        -sumAll
       );
-      newSizing[maxEntry[0]] = 100 + sumFloats(maxEntry[1], -sumAll);
     }
 
     setSizing(newSizing);
@@ -156,7 +163,7 @@ export const useTableSizing = (
     setSizingInfo(sizingInfoUpdater);
   };
 
-  return [sizing, onResize, setSizingInfoCustom];
+  return [sizing, setSizing, onSizingChange, sizingInfo, setSizingInfoCustom];
 };
 
 export const getTableSizing = (
@@ -170,15 +177,15 @@ export const getTableSizing = (
   return tablesData[tableId];
 };
 
-export const saveTableSizing = (
-  tableId: string,
-  sizingState: ColumnSizingState
-) => {
+export const saveTableSizing = (tableId: string, sizing: ColumnSizingState) => {
   throttle(() => {
     const tablesDataLS = localStorage.getItem('tablesSizingData');
-    let tablesData = tablesDataLS && JSON.parse(tablesDataLS);
-    if (!tablesData) tablesData = { [tableId]: sizingState };
-    else tablesData[tableId] = sizingState;
-    localStorage.setItem('tablesSizingData', JSON.stringify(tablesData));
+    const tablesData = tablesDataLS && JSON.parse(tablesDataLS);
+
+    let newTablesData = tablesData;
+    if (!tablesData) newTablesData = { [tableId]: sizing };
+    else newTablesData[tableId] = sizing;
+
+    localStorage.setItem('tablesSizingData', JSON.stringify(newTablesData));
   }, 1000)();
 };

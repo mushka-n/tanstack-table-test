@@ -1,1 +1,2 @@
-export const sumFloats = (a: number, b: number) => +(a + b).toFixed(12);
+export const sumFloats = (...numbers: number[]): number =>
+  +numbers.reduce((sum, num) => sum + num, 0).toFixed(3);
