@@ -5,22 +5,24 @@ import { AnyDataType, AnyDataTypeKey } from './index.types';
 import { useTableVisibility } from './useTableVisibility';
 import Header from './Header';
 import Body from './Body';
-import { Dispatch, SetStateAction, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTableSizing } from './useTableSizing';
 
 interface TableProps {
   id: string;
   data: AnyDataType[];
   dataTypeKey: AnyDataTypeKey;
-  selection: AnyDataType[];
-  setSelection: Dispatch<SetStateAction<AnyDataType[]>>;
+  onBottomReached?: () => void;
 }
 
-const Table = ({ id, dataTypeKey, data }: TableProps) => {
+const Table = ({ id, dataTypeKey, data, onBottomReached }: TableProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLTableElement>(null);
 
-  const [sizing, onResize, setSizingInfo] = useTableSizing(id, dataTypeKey);
-  const [visibility, setVisibility] = useTableVisibility(id, dataTypeKey);
+  const [sizing, setSizing, onSizingChange, sizingInfo, setSizingInfo] =
+    useTableSizing(id, dataTypeKey);
+
+  const [visibility, onVisibilityChange] = useTableVisibility(id, dataTypeKey);
 
   const table = useReactTable({
     data,
@@ -31,20 +33,38 @@ const Table = ({ id, dataTypeKey, data }: TableProps) => {
     getCoreRowModel: getCoreRowModel(),
     state: {
       columnSizing: sizing,
+      columnSizingInfo: sizingInfo,
       columnVisibility: visibility,
     },
     columnResizeMode: 'onChange',
-    onColumnVisibilityChange: setVisibility,
-    onColumnSizingChange: onResize,
+    onColumnVisibilityChange: (visibilityUpdater) =>
+      onVisibilityChange(visibilityUpdater, sizing, setSizing),
+    onColumnSizingChange: onSizingChange,
     onColumnSizingInfoChange: setSizingInfo,
     enableRowSelection: true,
     enableMultiRowSelection: true,
     enableColumnPinning: true,
   });
 
+  useEffect(() => {
+    if (!containerRef?.current || !onBottomReached) return;
+
+    const { scrollHeight, scrollTop, clientHeight } = containerRef.current;
+    const hasReachedBottom = scrollHeight - scrollTop - clientHeight < 300;
+
+    if (hasReachedBottom) onBottomReached();
+  }, [onBottomReached]);
+
   return (
-    <>
-      <div style={{ width: 'max-content', margin: '0 0 24px auto' }}>
+    <div
+      style={{ display: 'flex', flexDirection: 'row-reverse', height: '100%' }}
+    >
+      <div
+        style={{
+          minWidth: '120px',
+          margin: '0 0 0 16px',
+        }}
+      >
         {table.getAllLeafColumns().map((column) => (
           <div key={column.id}>
             <label>
@@ -59,20 +79,32 @@ const Table = ({ id, dataTypeKey, data }: TableProps) => {
         ))}
       </div>
 
-      <table
-        id={id}
-        ref={tableRef}
-        style={{
-          padding: '8px',
-          width: '100%',
-          backgroundColor: '#efefeffa',
-          height: 'max-content  ',
-        }}
+      <div
+        ref={containerRef}
+        className='table-container'
+        onScroll={onBottomReached}
       >
-        <Header tableRef={tableRef} table={table} sizing={sizing} />
-        <Body table={table} />
-      </table>
-    </>
+        <div>
+          <table
+            id={id}
+            ref={tableRef}
+            style={{
+              tableLayout: 'fixed',
+              position: 'relative',
+              width: '100%',
+              backgroundColor: '#efefeffa',
+              height: '100%',
+              borderCollapse: 'collapse',
+            }}
+            cellPadding={0}
+            cellSpacing={0}
+          >
+            <Header tableRef={tableRef} table={table} sizing={sizing} />
+            <Body containerRef={containerRef} table={table} />
+          </table>
+        </div>
+      </div>
+    </div>
   );
 };
 

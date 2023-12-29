@@ -1,6 +1,6 @@
 import { ColumnSizingState, Table, flexRender } from '@tanstack/react-table';
 import { AnyDataType } from '../index.types';
-import { AccessorKeys } from '../index.constants';
+import { AccessorKeys, CONTEXT_BTN_SIZE_PX } from '../index.constants';
 import { useLayoutEffect, useState } from 'react';
 
 interface TableHeaderProps {
@@ -14,15 +14,24 @@ const TableHeader = ({ tableRef, table, sizing }: TableHeaderProps) => {
   const [tableWidth, setTableWidth] = useState(0);
 
   useLayoutEffect(() => {
-    const handleResize = () =>
-      tableRef.current && setTableWidth(tableRef.current.offsetWidth);
+    const handleResize = () => {
+      if (!tableRef?.current) return;
+      setTableWidth(tableRef.current.offsetWidth);
+    };
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [tableRef]);
 
   return (
-    <thead>
+    <thead
+      style={{
+        position: 'sticky',
+        zIndex: 100,
+        top: 0,
+        background: '#efefef',
+      }}
+    >
       <tr>
         {table.getHeaderGroups()[0].headers.map((header, headerIndex) => (
           <th
@@ -32,13 +41,20 @@ const TableHeader = ({ tableRef, table, sizing }: TableHeaderProps) => {
               header.id !== AccessorKeys.ContextBtn
                 ? {
                     position: 'relative',
-                    width: `${(sizing[header.id] * (tableWidth - 16)) / 100}px`,
+                    height: '40px',
+                    padding: 0,
+                    width: `${
+                      (sizing[header.id] * (tableWidth - CONTEXT_BTN_SIZE_PX)) /
+                      100
+                    }px`,
                     minWidth: '10%',
                   }
                 : {
+                    height: '40px',
+                    padding: 0,
                     width: `min-content`,
-                    minWidth: `16px`,
-                    maxWidth: `16px`,
+                    minWidth: `${CONTEXT_BTN_SIZE_PX}px`,
+                    maxWidth: `${CONTEXT_BTN_SIZE_PX}px`,
                   }
             }
           >
@@ -46,13 +62,14 @@ const TableHeader = ({ tableRef, table, sizing }: TableHeaderProps) => {
               style={
                 header.id !== AccessorKeys.ContextBtn
                   ? {
-                      width: '100%',
-                      minWidth: `${(tableWidth - 16) / 10}px`,
+                      width: `${(tableWidth - CONTEXT_BTN_SIZE_PX) / 10}px`,
                     }
                   : {
-                      width: `16px`,
-                      minWidth: `16px`,
-                      maxWidth: `16px`,
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                      width: `${CONTEXT_BTN_SIZE_PX}px`,
+                      minWidth: `${CONTEXT_BTN_SIZE_PX}px`,
+                      maxWidth: `${CONTEXT_BTN_SIZE_PX}px`,
                     }
               }
             >
@@ -68,7 +85,7 @@ const TableHeader = ({ tableRef, table, sizing }: TableHeaderProps) => {
                   top: '0',
                   height: '100%',
                   boxSizing: 'border-box',
-                  margin: '0 -10px 0 0',
+                  margin: '0 -8px 0 0',
                   width: '17px',
                   padding: '0 8px',
                   cursor: 'col-resize',

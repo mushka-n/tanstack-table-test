@@ -1,3 +1,4 @@
+import { AnyAccessorKey } from './index.types';
 import { DSUser } from '../../types/DSUsers/DSUser';
 import { DSFile } from '../../types/DSItems/DSFile';
 import { AccessorKeys } from './index.constants';
@@ -5,6 +6,15 @@ import { AccessorKeys } from './index.constants';
 type TableItemTypeMap = {
   file: DSFile;
   user: DSUser;
+};
+
+type TableDataLocalStorage = {
+  [tableId: string]: {
+    [columnKey: string]: {
+      size: number;
+      isVisible: boolean;
+    };
+  };
 };
 
 // Simple
