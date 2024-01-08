@@ -29,7 +29,7 @@ export const makeUserData = (...lens: number[]) => {
   return makeUserDataLevel();
 };
 
-const usersData = makeUserData(10000);
+const usersData = makeUserData(1000);
 
 export const getUsers = (
   start: number,

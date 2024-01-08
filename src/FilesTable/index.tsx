@@ -37,6 +37,7 @@ const FilesTable = ({}: FilesTableProps) => {
       id={'table_mydocuments'}
       dataTypeKey='file'
       data={flatData}
+      dataTotalLength={totalDBRowCount}
       onBottomReached={onBottomReached}
     />
   );

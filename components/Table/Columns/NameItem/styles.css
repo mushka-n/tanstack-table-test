@@ -1,0 +1,35 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 8px;
+}
+
+.icon-checkbox-wrapper {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  display: block;
+}
+
+.checkbox {
+  display: none;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.icon-checkbox-wrapper:hover > .icon,
+.checkbox:checked ~ .icon {
+  display: none;
+}
+
+.icon-checkbox-wrapper:hover > .checkbox,
+.checkbox:checked {
+  display: block;
+}

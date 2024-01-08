@@ -47,9 +47,10 @@ const FileItemColumnData = Object.freeze({
     isDefaultVisible: true,
     defaultSize: 15,
   },
+  // Context Btn
   [AccessorKeys.ContextBtn]: {
     isDefaultVisible: true,
-    defaultSize: CONTEXT_BTN_SIZE_PCT,
+    defaultSize: 0,
   },
 });
 
@@ -66,9 +67,10 @@ const UserItemColumnData = Object.freeze({
     isDefaultVisible: true,
     defaultSize: 100 / 3,
   },
+  // Context Btn
   [AccessorKeys.ContextBtn]: {
     isDefaultVisible: true,
-    defaultSize: CONTEXT_BTN_SIZE_PCT,
+    defaultSize: 0,
   },
 });
 
@@ -84,11 +86,10 @@ export const getAccessorKeys = (dataTypeKey: AnyDataTypeKey) => {
 
 export const getDefaultVisibility = (dataTypeKey: AnyDataTypeKey) => {
   const columnData = TableDefaultColumnData[dataTypeKey];
+  const entries = Object.entries(columnData);
 
-  let result = {};
-  Object.entries(columnData).forEach(
-    ([key, data]) => (result = { ...result, [key]: data.isDefaultVisible })
-  );
+  const result: { [key: string]: boolean } = {};
+  entries.forEach(([key, data]) => (result[key] = data.isDefaultVisible));
   return result;
 };
 
@@ -99,12 +100,7 @@ export const getDefaultSizing = (dataTypeKey: AnyDataTypeKey) => {
   const columnData = TableDefaultColumnData[dataTypeKey];
   const entries = Object.entries(columnData);
 
-  const columns = entries.filter(([key]) => key !== AccessorKeys.ContextBtn);
-  const visibleColumns = columns.filter(([, data]) => data.isDefaultVisible);
-
   const result: { [key: string]: number } = {};
   entries.forEach(([key, data]) => (result[key] = data.defaultSize));
   return result;
 };
-
-console.log(getDefaultSizing('file'));

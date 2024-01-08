@@ -1,21 +1,27 @@
 import { useReactTable, getCoreRowModel } from '@tanstack/react-table';
-
 import { useColumnDef } from './useColumnDef';
 import { AnyDataType, AnyDataTypeKey } from './index.types';
 import { useTableVisibility } from './useTableVisibility';
-import Header from './Header';
-import Body from './Body';
+import TableHeader from './TableHeader';
+import TableBody from './TableBody';
 import { useEffect, useRef } from 'react';
 import { useTableSizing } from './useTableSizing';
 
 interface TableProps {
   id: string;
-  data: AnyDataType[];
   dataTypeKey: AnyDataTypeKey;
+  data: AnyDataType[];
+  dataTotalLength?: number;
   onBottomReached?: () => void;
 }
 
-const Table = ({ id, dataTypeKey, data, onBottomReached }: TableProps) => {
+const Table = ({
+  id,
+  dataTypeKey,
+  data,
+  dataTotalLength,
+  onBottomReached,
+}: TableProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLTableElement>(null);
 
@@ -99,8 +105,17 @@ const Table = ({ id, dataTypeKey, data, onBottomReached }: TableProps) => {
             cellPadding={0}
             cellSpacing={0}
           >
-            <Header tableRef={tableRef} table={table} sizing={sizing} />
-            <Body containerRef={containerRef} table={table} />
+            <TableHeader
+              containerRef={containerRef}
+              headers={table.getHeaderGroups()[0].headers}
+              sizing={sizing}
+            />
+
+            <TableBody
+              containerRef={containerRef}
+              rows={table.getRowModel().rows}
+              dataTotalLength={dataTotalLength}
+            />
           </table>
         </div>
       </div>

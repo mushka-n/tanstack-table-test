@@ -31,14 +31,12 @@ export const useTableVisibility = (
     const columnIndex = Object.keys(sizing).indexOf(columnKey);
     const [columnVisibility] = Object.values(newVisibility);
 
-    const entries = Object.entries(sizing);
-    const leftEntries = entries
-      .slice(0, columnIndex)
-      .filter(([, size]) => size > 0);
-    const rightEntries = entries
-      .slice(columnIndex + 1)
-      .filter(([, size]) => size > 0);
+    const entries = Object.entries(sizing).filter(([, size]) => size > 0);
+    const leftEntries = entries.slice(0, columnIndex);
+    const rightEntries = entries.slice(columnIndex + 1);
 
+    // To save the size of the column
+    // we turn its value to a negative number instead of making it 0
     const newSizing = { ...sizing };
     const columnSize = -sizing[columnKey];
     newSizing[columnKey] = columnSize;

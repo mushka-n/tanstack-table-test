@@ -65,7 +65,6 @@ export const useTableSizing = (
 
     const rawColumnSize = sumFloats(sizing[columnKey], delta);
     const columnSize = Math.max(minSize, Math.min(maxSize, rawColumnSize));
-    console.log('aaa', rawColumnSize, columnSize);
     const newSizing = { ...sizing };
     newSizing[columnKey] = columnSize;
 
@@ -119,8 +118,6 @@ export const useTableSizing = (
       let compensationRight = sumFloats(compensativeEntryRight[1], -delta);
       if (compensationRight < minSize) compensationRight = minSize;
       newSizing[compensativeEntryRight[0]] = compensationRight;
-
-      console.log(compensationLeft, compensationRight);
     }
 
     // Normalizes sizing if anything breaks (generally adds/removes 0.01-0.05)
@@ -133,7 +130,6 @@ export const useTableSizing = (
     );
 
     if (sumAll !== 100) {
-      console.log('NORMALIZE', sumAll, newSizing);
       let entryToNormalize: [string, number] = [columnKey, columnSize];
       if (sumAll < 100 && columnSize === maxSize)
         entryToNormalize = newEntries.reduce(

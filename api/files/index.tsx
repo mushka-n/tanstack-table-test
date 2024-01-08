@@ -2,6 +2,9 @@ import { faker } from '@faker-js/faker';
 import { makeUser } from '../accounts/people';
 import { DSFile } from '../../types/DSItems/DSFile';
 
+const DB_SIZE = 550;
+const RESPONSE_TIME = 1000;
+
 export type DSFileApiResponse = {
   data: DSFile[];
   total: number;
@@ -27,13 +30,9 @@ export const makeFiles = (...lens: number[]) => {
   return makeFilesLevel();
 };
 
-const data = makeFiles(10000);
+const data = makeFiles(DB_SIZE);
 
-export const getFiles = (
-  start: number,
-  size: number
-  // sorting: SortingState
-) => {
+export const getFiles = async (start: number, size: number) => {
   const dbData = [...data];
   // if (sorting.length) {
   //   const sort = sorting[0] as ColumnSort;
@@ -44,6 +43,7 @@ export const getFiles = (
   //   });
   // }
 
+  await new Promise((resolve) => setTimeout(resolve, RESPONSE_TIME));
   return {
     data: dbData.slice(start, start + size),
     total: dbData.length,
