@@ -1,37 +1,37 @@
 import { Row, flexRender } from '@tanstack/react-table';
-import { AnyDataType } from '@/components/Table/types/dataType';
+import { AnyDataType, AnyDataTypeKey } from '@/components/Table/types/dataType';
 import styles from './body.module.css';
-import { DSUser } from '@/types/DSUsers/DSUser';
-import { useVirtualizer } from '@tanstack/react-virtual';
 import { RefObject } from 'react';
 import ContextMenu from '@/components/ContextMenu';
-
-const ROW_HEIGHT = 48;
-const OVERSCAN = 10;
+import { useTableVirtualization } from '../../hooks/useTableVirtualization';
+import { useTableSelection } from '../../hooks/useTableSelection';
 
 interface TableBodyProps {
+  dataTypeKey: AnyDataTypeKey;
   containerRef: RefObject<HTMLDivElement>;
   rows: Row<AnyDataType>[];
   dataTotalLength?: number;
 }
 
-const TableBody = ({ containerRef, rows, dataTotalLength }: TableBodyProps) => {
-  const virtualizer = useVirtualizer({
-    count: rows.length,
-    getScrollElement: () => containerRef.current,
-    estimateSize: () => ROW_HEIGHT,
-    overscan: OVERSCAN,
-  });
+const TableBody = ({
+  dataTypeKey,
+  containerRef,
+  rows,
+  dataTotalLength,
+}: TableBodyProps) => {
+  const { selection, addItem, removeItem } = useTableSelection(dataTypeKey);
+  const canSelect = !!selection && !!addItem && !!removeItem;
 
-  const vRows = virtualizer.getVirtualItems();
+  const { vRows, offsetTop, offsetBottom } = useTableVirtualization(
+    rows,
+    containerRef
+  );
 
-  let offsetTop = 0;
-  let offsetBottom = 0;
-  if (vRows.length) {
-    offsetTop = vRows[0].start || 0;
-    offsetBottom =
-      rows.length * ROW_HEIGHT - (vRows[vRows.length - 1].end || 0);
-  }
+  const onSelectItem = (item: AnyDataType) => {
+    if (!canSelect) return;
+    if (!selection.includes(item)) addItem(item);
+    else removeItem(item);
+  };
 
   return (
     <tbody onContextMenu={(e) => e.preventDefault()}>
@@ -40,16 +40,23 @@ const TableBody = ({ containerRef, rows, dataTotalLength }: TableBodyProps) => {
       </tr>
 
       {vRows.map((vRow) => {
-        const row = rows[vRow.index] as Row<DSUser>;
+        const row = rows[vRow.index] as Row<AnyDataType>;
+        const item = row.original;
+        const isSelected = canSelect && selection.includes(item);
+
         return (
           <ContextMenu>
             <tr
               className={styles.row}
               key={row.id}
               style={{
+                boxSizing: 'border-box',
                 height: `48px`,
+                width: '100%',
                 borderBottom: '1px solid #dedede',
+                background: canSelect && isSelected ? '#ccc' : '',
               }}
+              onClick={() => onSelectItem(item)}
             >
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id}>

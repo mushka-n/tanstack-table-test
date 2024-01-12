@@ -113,6 +113,7 @@ const Table = ({
             />
 
             <TableBody
+              dataTypeKey={dataTypeKey}
               containerRef={containerRef}
               rows={table.getRowModel().rows}
               dataTotalLength={dataTotalLength}

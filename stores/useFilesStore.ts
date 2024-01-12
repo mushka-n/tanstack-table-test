@@ -2,29 +2,31 @@ import { DSFile } from '@/types/DSItems/DSFile';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-interface FilesState {
+interface FilesStoreState {
   selection: DSFile[];
+  addItem: (addedFile: DSFile) => void;
+  removeItem: (removedFile: DSFile) => void;
 }
 
-const useFilesStore = create<FilesState>()(
+const useFilesStore = create<FilesStoreState>()(
   persist(
     (set) => ({
       selection: [],
 
-      addFile: (addedFile: DSFile) =>
+      addItem: (addedFile: DSFile) =>
         set((state) => ({
           ...state,
           selection: [...state.selection, addedFile],
         })),
 
-      removeFile: (removedFile: DSFile) =>
+      removeItem: (removedFile: DSFile) =>
         set((state) => ({
           ...state,
           selection: state.selection.filter((f) => f.id !== removedFile.id),
         })),
     }),
     {
-      name: 'files-storage',
+      name: 'files-store',
     }
   )
 );

@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { makeUser } from '@/api/accounts/people';
 import { DSFile } from '@/types/DSItems/DSFile';
 
-const DB_SIZE = 550;
+const DB_SIZE = 150;
 const RESPONSE_TIME = 1000;
 
 export type DSFileApiResponse = {

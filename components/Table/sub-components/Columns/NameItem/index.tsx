@@ -1,27 +1,17 @@
-import { CellContext, ColumnDef } from '@tanstack/react-table';
+import { ColumnDef } from '@tanstack/react-table';
 import { AccessorKeys } from '@/components/Table/constants/accessorKeys';
 import { DSFile } from '@/types/DSItems/DSFile';
 import './styles.css';
-import DocxIcon from '@/src/icons/docx.svg';
+import NameItemCell from './NameItemCell';
 
-const NameItemColumn = (): ColumnDef<DSFile, never> => {
+const NameItemColumn = (): ColumnDef<DSFile, DSFile> => {
   return {
     accessorKey: AccessorKeys.NameItem,
+    accessorFn: (item: DSFile) => item,
     header: 'Name',
     enableHiding: false,
 
-    cell: ({ getValue }: CellContext<DSFile, string>) => {
-      return (
-        <div className='wrapper'>
-          <div className='icon-checkbox-wrapper'>
-            <input className='checkbox' type='checkbox' />
-            <img src={DocxIcon} className='icon' alt='React logo' />
-          </div>
-
-          {getValue()}
-        </div>
-      );
-    },
+    cell: NameItemCell,
   };
 };
 
