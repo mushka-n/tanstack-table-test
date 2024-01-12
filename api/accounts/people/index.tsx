@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
-import { DSUser } from '../../../types/DSUsers/DSUser';
-import { DSUserRole } from '../../../types/DSUsers/DSUserRole';
+import { DSUser } from '@/types/DSUsers/DSUser';
+import { DSUserRole } from '@/types/DSUsers/DSUserRole';
 
 export type DSUserApiResponse = {
   data: DSUser[];

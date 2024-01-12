@@ -1,22 +1,21 @@
-import { useEffect, useCallback, useMemo } from 'react';
-import Table from '../../components/Table';
-import { DSUserApiResponse, getUsers } from '../../api/accounts/people';
+import { useCallback, useMemo } from 'react';
+import Table from '@/components/Table';
+import { DSUserApiResponse, getUsers } from '@/api/accounts/people';
 import { useInfiniteQuery } from '@tanstack/react-query';
-
-interface UsersTableProps {}
 
 const fetchSize = 100;
 
-const UsersTable = ({}: UsersTableProps) => {
+const UsersTable = () => {
   const {
     data,
     fetchNextPage,
     isFetchingNextPage: isFetching,
   } = useInfiniteQuery<DSUserApiResponse>({
     queryKey: ['users-table-data', []],
-    queryFn: async ({ pageParam = 0 }: { pageParam: number }) =>
-      getUsers(pageParam * fetchSize, fetchSize),
+    queryFn: async ({ pageParam }) =>
+      getUsers((pageParam as number) * fetchSize, fetchSize),
     getNextPageParam: (_, allPages) => allPages.length,
+    initialPageParam: 0,
     refetchOnWindowFocus: false,
   });
 

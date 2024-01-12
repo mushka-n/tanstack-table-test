@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
-import { makeUser } from '../accounts/people';
-import { DSFile } from '../../types/DSItems/DSFile';
+import { makeUser } from '@/api/accounts/people';
+import { DSFile } from '@/types/DSItems/DSFile';
 
 const DB_SIZE = 550;
 const RESPONSE_TIME = 1000;

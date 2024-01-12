@@ -1,22 +1,21 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useMemo, useCallback } from 'react';
-import { DSFileApiResponse, getFiles } from '../../api/files';
-import Table from '../../components/Table';
-
-interface FilesTableProps {}
+import { DSFileApiResponse, getFiles } from '@/api/files';
+import Table from '@/components/Table';
 
 const fetchSize = 100;
 
-const FilesTable = ({}: FilesTableProps) => {
+const FilesTable = () => {
   const {
     data,
     fetchNextPage,
     isFetchingNextPage: isFetching,
   } = useInfiniteQuery<DSFileApiResponse>({
     queryKey: ['files-table-data', []],
-    queryFn: async ({ pageParam = 0 }: { pageParam: number }) =>
-      getFiles(pageParam * fetchSize, fetchSize),
+    queryFn: async ({ pageParam }) =>
+      getFiles((pageParam as number) * fetchSize, fetchSize),
     getNextPageParam: (_, allPages) => allPages.length,
+    initialPageParam: 0,
     refetchOnWindowFocus: false,
   });
 

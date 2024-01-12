@@ -1,4 +1,4 @@
-import { DSUserRole } from './DSUserRole';
+import { DSUserRole } from '@/types/DSUsers/DSUserRole';
 
 export type DSUser = {
   id: string;

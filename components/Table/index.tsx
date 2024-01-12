@@ -3,13 +3,13 @@ import {
   getCoreRowModel,
   ColumnDef,
 } from '@tanstack/react-table';
-import { useColumnDef } from './useColumnDef';
-import { AnyDataType, AnyDataTypeKey } from './index.types';
-import { useTableVisibility } from './useTableVisibility';
-import TableHeader from './TableHeader';
-import TableBody from './TableBody';
+import { useColumnDef } from './hooks/useColumnDef';
+import { AnyDataType, AnyDataTypeKey } from './types/dataType';
+import { useTableVisibility } from './hooks/useTableVisibility';
+import TableHeader from './sub-components/TableHeader';
+import TableBody from './sub-components/TableBody';
 import { useEffect, useRef } from 'react';
-import { useTableSizing } from './useTableSizing';
+import { useTableSizing } from './hooks/useTableSizing';
 
 interface TableProps {
   id: string;

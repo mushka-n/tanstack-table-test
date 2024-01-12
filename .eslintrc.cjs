@@ -15,4 +15,17 @@ module.exports = {
       { allowConstantExport: true },
     ],
   },
+  settings: {
+    'import/resolver': {
+      alias: [
+        ['@', './'],
+        ['@/api', './api'],
+        ['@/components', './components'],
+        ['@/src', './src'],
+        ['@/stores', './stores'],
+        ['@/types', './types'],
+        ['@/utils', './utils'],
+      ],
+    },
+  },
 };

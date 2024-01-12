@@ -1,5 +1,5 @@
-import { DSUser } from '../DSUsers/DSUser';
-import { DSFileType } from './DSFileType';
+import { DSUser } from '@/types/DSUsers/DSUser';
+import { DSFileType } from '@/types/DSItems/DSFileType';
 
 export type DSFile = {
   id: number;
