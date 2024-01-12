@@ -4,6 +4,7 @@ import styles from './body.module.css';
 import { DSUser } from '../../../types/DSUsers/DSUser';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { RefObject } from 'react';
+import ContextMenu from '../../ContextMenu';
 
 const ROW_HEIGHT = 48;
 const OVERSCAN = 10;
@@ -41,20 +42,22 @@ const TableBody = ({ containerRef, rows, dataTotalLength }: TableBodyProps) => {
       {vRows.map((vRow) => {
         const row = rows[vRow.index] as Row<DSUser>;
         return (
-          <tr
-            className={styles.row}
-            key={row.id}
-            style={{
-              height: `48px`,
-              borderBottom: '1px solid #dedede',
-            }}
-          >
-            {row.getVisibleCells().map((cell) => (
-              <td key={cell.id}>
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </td>
-            ))}
-          </tr>
+          <ContextMenu>
+            <tr
+              className={styles.row}
+              key={row.id}
+              style={{
+                height: `48px`,
+                borderBottom: '1px solid #dedede',
+              }}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <td key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          </ContextMenu>
         );
       })}
 

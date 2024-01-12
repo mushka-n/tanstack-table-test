@@ -1,4 +1,8 @@
-import { useReactTable, getCoreRowModel } from '@tanstack/react-table';
+import {
+  useReactTable,
+  getCoreRowModel,
+  ColumnDef,
+} from '@tanstack/react-table';
 import { useColumnDef } from './useColumnDef';
 import { AnyDataType, AnyDataTypeKey } from './index.types';
 import { useTableVisibility } from './useTableVisibility';
@@ -32,10 +36,7 @@ const Table = ({
 
   const table = useReactTable({
     data,
-    // @ts-expect-error: -
-    // ColumnDef generic can't understand the difference between AnyDataType and (DSFile | DSUser | ...),
-    // but table data doesn't accept union types
-    columns: useColumnDef(dataTypeKey),
+    columns: useColumnDef(dataTypeKey) as ColumnDef<AnyDataType>[],
     getCoreRowModel: getCoreRowModel(),
     state: {
       columnSizing: sizing,
@@ -67,7 +68,7 @@ const Table = ({
     >
       <div
         style={{
-          minWidth: '120px',
+          minWidth: '140px',
           margin: '0 0 0 16px',
         }}
       >

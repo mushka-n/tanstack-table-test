@@ -2,7 +2,7 @@ import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { AccessorKeys } from '../../index.constants';
 import { DSFile } from '../../../../types/DSItems/DSFile';
 import './styles.css';
-import DocxIcon from '../../../../public/icons/docx.svg';
+import DocxIcon from '../../../../src/icons/docx.svg';
 
 const NameItemColumn = (): ColumnDef<DSFile, never> => {
   return {

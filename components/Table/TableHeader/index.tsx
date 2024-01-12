@@ -5,7 +5,7 @@ import {
   CONTEXT_BTN_SIZE_PX,
   TABLE_MIN_SIZE,
 } from '../index.constants';
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface TableHeaderProps {
   headers: Header<AnyDataType, unknown>[];
@@ -16,14 +16,26 @@ interface TableHeaderProps {
 const TableHeader = ({ containerRef, headers, sizing }: TableHeaderProps) => {
   const [tableWidth, setTableWidth] = useState(0);
 
-  useLayoutEffect(() => {
-    const handleResize = () => {
-      if (!containerRef?.current) return;
-      setTableWidth(containerRef.current.offsetWidth - 20);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+  // useLayoutEffect(() => {
+  //   const handleResize = () => {
+  //     if (!containerRef?.current) return;
+  //     setTableWidth(containerRef.current.offsetWidth - 20);
+  //   };
+  //   handleResize();
+  //   window.addEventListener('resize', handleResize);
+  //   return () => window.removeEventListener('resize', handleResize);
+  // }, [containerRef]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new ResizeObserver((entries) =>
+      setTableWidth(entries[0].contentRect.width)
+    );
+
+    observer.observe(container);
+    return () => container && observer.unobserve(container);
   }, [containerRef]);
 
   return (

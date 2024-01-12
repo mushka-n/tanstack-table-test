@@ -9,7 +9,7 @@ function App() {
     setIsInfoPanelVisible(!isInfoPanelVisible);
 
   return (
-    <>
+    <div className='app'>
       <button
         style={{ position: 'fixed', top: '8px', right: '8px' }}
         onClick={onToggleIsInfoPanelVisible}
@@ -17,7 +17,14 @@ function App() {
         Info Panel
       </button>
 
-      <div style={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
+      <div
+        style={{
+          width: '100%',
+          maxWidth: '100%',
+          display: 'flex',
+          flexDirection: 'row',
+        }}
+      >
         <div style={{ width: '100%' }}>
           <h2 style={{ marginTop: '40px', textAlign: 'center' }}>Files</h2>
 
@@ -33,10 +40,18 @@ function App() {
         </div>
 
         {isInfoPanelVisible && (
-          <div style={{ height: '100%', width: '400px', minWidth: '400px' }} />
+          <div
+            className='info-panel'
+            style={{
+              height: '100dvh',
+              width: '400px',
+              minWidth: '400px',
+              background: '#eee',
+            }}
+          />
         )}
       </div>
-    </>
+    </div>
   );
 }
 
