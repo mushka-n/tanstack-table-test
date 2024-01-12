@@ -6,18 +6,15 @@ export const useTableSelection = (
   dataTypeKey: AnyDataTypeKey
 ): {
   selection: AnyDataType[] | null;
-  addItem: (item: AnyDataType) => void | null;
-  removeItem: (item: AnyDataType) => void | null;
+  setSelection: ((newSelection: AnyDataType[]) => void) | null;
 } => {
   // File
   const filesSelection = useFilesStore((state) => state.selection);
-  const addFile = useFilesStore((state) => state.addItem);
-  const removeFile = useFilesStore((state) => state.removeItem);
+  const setFileSelection = useFilesStore((state) => state.setSelection);
 
   // User
   const userSelection = useUsersStore((state) => state.selection);
-  const addUser = useUsersStore((state) => state.addItem);
-  const removeUser = useUsersStore((state) => state.removeItem);
+  const setUserSelection = useUsersStore((state) => state.setSelection);
 
   const selection = (
     dataTypeKey === 'file'
@@ -27,17 +24,16 @@ export const useTableSelection = (
         : null
   ) as AnyDataType[];
 
-  const addItem = (dataTypeKey === 'file' ? addFile : addUser) as (
-    item: AnyDataType
-  ) => void;
-
-  const removeItem = (dataTypeKey === 'file' ? removeFile : removeUser) as (
-    item: AnyDataType
-  ) => void;
+  const setSelection = (
+    dataTypeKey === 'file'
+      ? setFileSelection
+      : dataTypeKey === 'user'
+        ? setUserSelection
+        : null
+  ) as ((newSelection: AnyDataType[]) => void) | null;
 
   return {
     selection,
-    addItem,
-    removeItem,
+    setSelection,
   };
 };

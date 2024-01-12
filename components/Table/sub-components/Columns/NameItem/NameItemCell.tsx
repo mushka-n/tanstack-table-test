@@ -6,14 +6,15 @@ import { useTableSelection } from '@/components/Table/hooks/useTableSelection';
 
 const NameItemCell = ({ getValue }: CellContext<DSFile, DSFile>) => {
   const item = getValue();
-  const { selection, addItem, removeItem } = useTableSelection('file');
+
+  const { selection, setSelection } = useTableSelection('file');
 
   const isSelected = selection?.includes(item);
 
   const onToggleSelect = () => {
-    if (!selection || !addItem || !removeItem) return;
-    if (!selection.includes(item)) addItem(item);
-    else removeItem(item);
+    if (!selection || !setSelection) return;
+    if (!selection.includes(item)) setSelection([...selection, item]);
+    else setSelection(selection.filter((i) => i !== item));
   };
 
   return (

@@ -19,8 +19,8 @@ const TableBody = ({
   rows,
   dataTotalLength,
 }: TableBodyProps) => {
-  const { selection, addItem, removeItem } = useTableSelection(dataTypeKey);
-  const canSelect = !!selection && !!addItem && !!removeItem;
+  const { selection, setSelection } = useTableSelection(dataTypeKey);
+  const canSelect = !!selection && !!setSelection;
 
   const { vRows, offsetTop, offsetBottom } = useTableVirtualization(
     rows,
@@ -29,14 +29,18 @@ const TableBody = ({
 
   const onSelectItem = (item: AnyDataType) => {
     if (!canSelect) return;
-    if (!selection.includes(item)) addItem(item);
-    else removeItem(item);
+    setSelection([item]);
   };
 
   return (
     <tbody onContextMenu={(e) => e.preventDefault()}>
       <tr>
-        <td style={{ height: `${offsetTop}px` }} />
+        <td
+          style={{
+            minWidth: 'auto',
+            height: `${offsetTop}px`,
+          }}
+        />
       </tr>
 
       {vRows.map((vRow) => {
@@ -73,6 +77,7 @@ const TableBody = ({
           <td
             colSpan={99}
             style={{
+              minWidth: 'auto',
               height: `48px`,
               width: '100%',
               background: 'grey',
@@ -85,7 +90,12 @@ const TableBody = ({
       )}
 
       <tr>
-        <td style={{ height: `${offsetBottom}px` }} />
+        <td
+          style={{
+            minWidth: 'auto',
+            height: `${offsetBottom}px`,
+          }}
+        />
       </tr>
     </tbody>
   );

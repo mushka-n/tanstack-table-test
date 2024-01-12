@@ -4,8 +4,7 @@ import { persist } from 'zustand/middleware';
 
 interface FilesStoreState {
   selection: DSFile[];
-  addItem: (addedFile: DSFile) => void;
-  removeItem: (removedFile: DSFile) => void;
+  setSelection: (selection: DSFile[]) => void;
 }
 
 const useFilesStore = create<FilesStoreState>()(
@@ -13,17 +12,8 @@ const useFilesStore = create<FilesStoreState>()(
     (set) => ({
       selection: [],
 
-      addItem: (addedFile: DSFile) =>
-        set((state) => ({
-          ...state,
-          selection: [...state.selection, addedFile],
-        })),
-
-      removeItem: (removedFile: DSFile) =>
-        set((state) => ({
-          ...state,
-          selection: state.selection.filter((f) => f.id !== removedFile.id),
-        })),
+      setSelection: (selection: DSFile[]) =>
+        set((state) => ({ ...state, selection })),
     }),
     {
       name: 'files-store',

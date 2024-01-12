@@ -4,8 +4,7 @@ import { persist } from 'zustand/middleware';
 
 interface UsersStoreState {
   selection: DSUser[];
-  addItem: (addedUser: DSUser) => void;
-  removeItem: (removedUser: DSUser) => void;
+  setSelection: (selection: DSUser[]) => void;
 }
 
 const useUsersStore = create<UsersStoreState>()(
@@ -13,17 +12,8 @@ const useUsersStore = create<UsersStoreState>()(
     (set) => ({
       selection: [],
 
-      addItem: (addedUser: DSUser) =>
-        set((state) => ({
-          ...state,
-          selection: [...state.selection, addedUser],
-        })),
-
-      removeItem: (removedUser: DSUser) =>
-        set((state) => ({
-          ...state,
-          selection: state.selection.filter((f) => f.id !== removedUser.id),
-        })),
+      setSelection: (selection: DSUser[]) =>
+        set((state) => ({ ...state, selection })),
     }),
     {
       name: 'users-store',

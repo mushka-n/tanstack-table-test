@@ -22,11 +22,7 @@ const ContextMenu = ({ children }: ContextMenuProps) => {
         {children}
       </ContextMenuPrimitive.Trigger>
       <ContextMenuPrimitive.Portal>
-        <ContextMenuPrimitive.Content
-          className='ContextMenuContent'
-          sideOffset={5}
-          align='end'
-        >
+        <ContextMenuPrimitive.Content className='ContextMenuContent'>
           <ContextMenuPrimitive.Item className='ContextMenuItem'>
             Back <div className='RightSlot'>⌘+[</div>
           </ContextMenuPrimitive.Item>
