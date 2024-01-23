@@ -28,13 +28,13 @@ function App() {
         <div style={{ width: '100%' }}>
           <h2 style={{ marginTop: '40px', textAlign: 'center' }}>Files</h2>
 
-          <div style={{ width: '100%', height: '320px' }}>
+          <div style={{ width: '100%', height: '600px' }}>
             <FilesTable />
           </div>
 
           <h2 style={{ marginTop: '40px', textAlign: 'center' }}>Users</h2>
 
-          <div style={{ width: '100%', height: '320px' }}>
+          <div style={{ width: '100%', height: '600px' }}>
             <UsersTable />
           </div>
         </div>

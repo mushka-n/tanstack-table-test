@@ -16,7 +16,7 @@ const useUsersStore = create<UsersStoreState>()(
         set((state) => ({ ...state, selection })),
     }),
     {
-      name: 'users-store',
+      name: 'STORE | users',
     }
   )
 );

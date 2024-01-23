@@ -1,39 +1,39 @@
 import useFilesStore from '@/stores/useFilesStore';
-import { AnyDataType, AnyDataTypeKey } from '../types/dataType';
+import { AnyDataTypeKey, DataTypeByKey } from '../types';
 import useUsersStore from '@/stores/useUsersStore';
 
-export const useTableSelection = (
-  dataTypeKey: AnyDataTypeKey
-): {
-  selection: AnyDataType[] | null;
-  setSelection: ((newSelection: AnyDataType[]) => void) | null;
-} => {
-  // File
-  const filesSelection = useFilesStore((state) => state.selection);
-  const setFileSelection = useFilesStore((state) => state.setSelection);
+type useTableSelectionResult<DTK extends AnyDataTypeKey> = {
+  selection: DataTypeByKey<DTK>[] | null;
+  setSelection: ((newSelection: DataTypeByKey<DTK>[]) => void) | null;
+};
 
-  // User
-  const userSelection = useUsersStore((state) => state.selection);
-  const setUserSelection = useUsersStore((state) => state.setSelection);
+export const useTableSelection = <DTK extends AnyDataTypeKey>(
+  dataTypeKey: DTK
+): useTableSelectionResult<DTK> => {
+  const fileSelection = useTableFileSelection();
+  const userSelection = useTableUserSelection();
 
-  const selection = (
-    dataTypeKey === 'file'
-      ? filesSelection
-      : dataTypeKey === 'user'
-        ? userSelection
-        : null
-  ) as AnyDataType[];
+  switch (dataTypeKey) {
+    case 'file':
+      return fileSelection as unknown as useTableSelectionResult<DTK>;
+    case 'user':
+      return userSelection as unknown as useTableSelectionResult<DTK>;
+    default:
+      return {
+        selection: null,
+        setSelection: null,
+      };
+  }
+};
 
-  const setSelection = (
-    dataTypeKey === 'file'
-      ? setFileSelection
-      : dataTypeKey === 'user'
-        ? setUserSelection
-        : null
-  ) as ((newSelection: AnyDataType[]) => void) | null;
+const useTableFileSelection = (): useTableSelectionResult<'file'> => {
+  const selection = useFilesStore((state) => state.selection);
+  const setSelection = useFilesStore((state) => state.setSelection);
+  return { selection, setSelection };
+};
 
-  return {
-    selection,
-    setSelection,
-  };
+const useTableUserSelection = (): useTableSelectionResult<'user'> => {
+  const selection = useUsersStore((state) => state.selection);
+  const setSelection = useUsersStore((state) => state.setSelection);
+  return { selection, setSelection };
 };

@@ -1,5 +1,5 @@
 import { AccessorKeys } from './accessorKeys';
-import { AnyDataTypeKey } from '@/components/Table/types/dataType';
+import { AnyDataTypeKey } from '@/components/Table/types';
 
 // In %
 export const TABLE_MIN_SIZE = 10;
@@ -65,6 +65,8 @@ export const TableDefaultColumnData = Object.freeze({
   user: UserItemColumnData,
 });
 
+//
+
 export const getDefaultVisibility = (dataTypeKey: AnyDataTypeKey) => {
   const columnData = TableDefaultColumnData[dataTypeKey];
   const entries = Object.entries(columnData);
@@ -74,9 +76,6 @@ export const getDefaultVisibility = (dataTypeKey: AnyDataTypeKey) => {
   return result;
 };
 
-// Default visible column size = 100 / number of default visible columns
-// Default hidden column size  = -1 * (100 / number of all columns)
-// Context button column size  = 0
 export const getDefaultSizing = (dataTypeKey: AnyDataTypeKey) => {
   const columnData = TableDefaultColumnData[dataTypeKey];
   const entries = Object.entries(columnData);

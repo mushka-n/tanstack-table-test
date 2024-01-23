@@ -4,19 +4,17 @@ import {
   VisibilityState,
 } from '@tanstack/react-table';
 import { Dispatch, SetStateAction, useState } from 'react';
-import {
-  TABLE_MIN_SIZE as minSize,
-  getDefaultVisibility,
-} from '@/components/Table/constants/columnData';
-import { AnyDataTypeKey } from '@/components/Table/types/dataType';
-import { sumFloats } from '@/utils/sumFloats';
+import { TABLE_MIN_SIZE as minSize } from '@/components/Table/constants/columnData';
+import { AnyDataTypeKey } from '@/components/Table/types';
+import { addF } from '@/utils/sumFloats';
+import { getSavedTableVisibility, saveTablesState } from './useTableSavedState';
 
 export const useTableVisibility = (
   tableId: string,
   dataTypeKey: AnyDataTypeKey
 ): [VisibilityState, typeof onVisibilityChange] => {
   const [visibility, setVisibility] = useState(
-    getTableVisibility(tableId, dataTypeKey)
+    getSavedTableVisibility(tableId, dataTypeKey)
   );
 
   const onVisibilityChange = (
@@ -26,12 +24,15 @@ export const useTableVisibility = (
   ) => {
     if (typeof visibilityUpdater !== 'function') return;
 
-    const newVisibility = visibilityUpdater({});
-    const [columnKey] = Object.keys(newVisibility);
-    const columnIndex = Object.keys(sizing).indexOf(columnKey);
-    const [columnVisibility] = Object.values(newVisibility);
+    const [columnKey] = Object.keys(visibilityUpdater({}));
+    const [columnVisibility] = Object.values(visibilityUpdater({}));
+    const newVisibility = { ...visibility, [columnKey]: columnVisibility };
 
-    const entries = Object.entries(sizing).filter(([, size]) => size > 0);
+    // We only use visible columns (with size > 0) in calculations
+    console.log(sizing);
+    let entries = Object.entries(sizing);
+    entries = entries.filter(([key, size]) => key === columnKey || size > 0);
+    const columnIndex = entries.findIndex(([key]) => key === columnKey);
     const leftEntries = entries.slice(0, columnIndex);
     const rightEntries = entries.slice(columnIndex + 1);
 
@@ -42,72 +43,49 @@ export const useTableVisibility = (
     newSizing[columnKey] = columnSize;
 
     // Toggling column visibility ON:
-    // we iterate through [first column to the left] and [all columns to the right]
-    // and remove as much from their size as we can until [sizeToRedestribute] becomes 0
+    // we iterate through [first column to the left], [all columns to the right], [other columns to the left in reverse order]
+    // and in that specific order remove as much from their size as we can until [sizeToCompensate] becomes 0
     if (columnVisibility) {
-      let sizeToRedestribute = columnSize;
-      const entriesToCompensate = [leftEntries.pop()!, ...rightEntries];
-      entriesToCompensate.every(([entryKey, entrySize]) => {
-        let newEntrySize = sumFloats(entrySize, -sizeToRedestribute);
+      let sizeToCompensate = columnSize;
+      const entriesToAdjust = [
+        leftEntries.at(-1)!,
+        ...rightEntries,
+        ...leftEntries.slice(0, -1).reverse(),
+      ];
+
+      entriesToAdjust.every(([entryKey, entrySize]) => {
+        let newEntrySize = addF(entrySize, -sizeToCompensate);
+
         if (newEntrySize < minSize) {
-          sizeToRedestribute = sumFloats(minSize, -newEntrySize);
           newEntrySize = minSize;
-        } else sizeToRedestribute = 0;
+          sizeToCompensate = addF(sizeToCompensate, -(entrySize - minSize));
+        } else {
+          sizeToCompensate = 0;
+        }
+
         newSizing[entryKey] = newEntrySize;
+        return !!sizeToCompensate;
       });
     }
 
     // Toggling column visibility OFF:
     // [first column to the left] gets all its size
     else {
-      const [entryKey, entrySize] = leftEntries.pop()!;
-      newSizing[entryKey] = sumFloats(entrySize, sizing[columnKey]);
+      console.log(entries);
+      const [entryKey, entrySize] = leftEntries.at(-1)!;
+      newSizing[entryKey] = addF(entrySize, sizing[columnKey]);
     }
 
-    setVisibility(visibilityUpdater);
+    setVisibility(newVisibility);
     setSizing(newSizing);
-    saveTableVisibility(tableId, dataTypeKey, visibilityUpdater);
+
+    saveTablesState({
+      tableId,
+      dataTypeKey,
+      sizing: newSizing,
+      visibility: newVisibility,
+    });
   };
 
   return [visibility, onVisibilityChange];
-};
-
-export const getTableVisibility = (
-  tableId: string,
-  dataTypeKey: AnyDataTypeKey
-): VisibilityState => {
-  const tablesDataLS = localStorage.getItem('tablesVisibilityData');
-  const tablesData = tablesDataLS && JSON.parse(tablesDataLS);
-
-  if (!tablesData?.[tableId]) return getDefaultVisibility(dataTypeKey);
-  return tablesData[tableId];
-};
-
-export const saveTableVisibility = (
-  tableId: string,
-  dataTypeKey: AnyDataTypeKey,
-  visibilityUpdater: Updater<VisibilityState>
-) => {
-  if (typeof visibilityUpdater !== 'function') return;
-
-  const visibility = visibilityUpdater({});
-
-  const [columnId] = Object.keys(visibility);
-  const [columnValue] = Object.values(visibility);
-
-  const tablesDataLS = localStorage.getItem('tablesVisibilityData');
-  let tablesData = tablesDataLS && JSON.parse(tablesDataLS);
-
-  if (!tablesData?.[tableId]) {
-    const updatedDefaultVisibility = {
-      ...getDefaultVisibility(dataTypeKey),
-      [columnId]: columnValue,
-    };
-    if (!tablesData) tablesData = { [tableId]: updatedDefaultVisibility };
-    else tablesData[tableId] = updatedDefaultVisibility;
-  } else {
-    tablesData[tableId][columnId] = columnValue;
-  }
-
-  localStorage.setItem('tablesVisibilityData', JSON.stringify(tablesData));
 };

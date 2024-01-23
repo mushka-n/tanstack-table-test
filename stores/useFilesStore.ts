@@ -16,7 +16,7 @@ const useFilesStore = create<FilesStoreState>()(
         set((state) => ({ ...state, selection })),
     }),
     {
-      name: 'files-store',
+      name: 'STORE | files',
     }
   )
 );

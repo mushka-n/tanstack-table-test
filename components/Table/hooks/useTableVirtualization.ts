@@ -1,13 +1,12 @@
 import { Row } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { RefObject } from 'react';
-import { AnyDataType } from '../types/dataType';
 
 const ROW_HEIGHT = 48;
 const OVERSCAN = 5;
 
 export const useTableVirtualization = (
-  rows: Row<AnyDataType>[],
+  rows: Row<unknown>[],
   containerRef: RefObject<HTMLDivElement>
 ) => {
   const virtualizer = useVirtualizer({
@@ -19,13 +18,14 @@ export const useTableVirtualization = (
 
   const vRows = virtualizer.getVirtualItems();
 
+  const totalSize = virtualizer.getTotalSize();
+
   let offsetTop = 0;
   let offsetBottom = 0;
   if (vRows.length) {
-    offsetTop = vRows[0].start || 0;
-    offsetBottom =
-      rows.length * ROW_HEIGHT - (vRows[vRows.length - 1].end || 0);
+    offsetTop = Math.max(0, vRows[0].start - virtualizer.options.scrollMargin);
+    offsetBottom = Math.max(0, totalSize - vRows[vRows.length - 1].end);
   }
 
-  return { vRows, offsetTop, offsetBottom };
+  return { vRows, totalSize, offsetTop, offsetBottom };
 };
