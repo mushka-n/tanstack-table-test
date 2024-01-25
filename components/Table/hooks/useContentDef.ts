@@ -1,9 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { AnyDataTypeKey, DataTypeByKey } from '@/components/Table/types';
-
-import Columns from '@/components/Table/views/Table/Body/Columns';
-import Rows from '@/components/Table/views/Row/Rows';
-import Tiles from '@/components/Table/views/Tile/Tiles';
+import { ContentSettings } from '../settings';
 
 type ContentDef<DTK extends AnyDataTypeKey> = ColumnDef<
   DataTypeByKey<DTK>,
@@ -14,58 +11,15 @@ export const useContentDef = <DTK extends AnyDataTypeKey>(
   dataTypeKey: DTK,
   view: 'row' | 'table' | 'tile'
 ): ContentDef<DTK> => {
+  const contentSettings =
+    ContentSettings[dataTypeKey as keyof typeof ContentSettings];
+
   switch (view) {
     case 'table':
-      return tableDef(dataTypeKey);
+      return contentSettings.views.table.columns as ContentDef<DTK>;
     case 'row':
-      return rowDef(dataTypeKey);
+      return contentSettings.views.row as ContentDef<DTK>;
     case 'tile':
-      return tileDef(dataTypeKey);
-  }
-};
-
-export const tableDef = <DTK extends AnyDataTypeKey>(dataTypeKey: DTK) => {
-  switch (dataTypeKey) {
-    case 'file':
-      return [
-        Columns.NameItemColumn(),
-        Columns.AuthorColumn(),
-        Columns.CreatedDateColumn(),
-        Columns.DateUpdatedColumn(),
-        Columns.SizeColumn(),
-        Columns.FileTypeColumn(),
-        Columns.ContextBtnColumn(),
-      ] as ContentDef<DTK>;
-    case 'user':
-      return [
-        Columns.NameUserColumn(),
-        Columns.TypeUserColumn(),
-        Columns.EmailColumn(),
-        Columns.ContextBtnColumn(),
-      ] as ContentDef<DTK>;
-    default:
-      throw new Error('Unexpected object: ' + dataTypeKey);
-  }
-};
-
-export const rowDef = <DTK extends AnyDataTypeKey>(dataTypeKey: DTK) => {
-  switch (dataTypeKey) {
-    case 'file':
-      return [Rows.FileRow()] as ContentDef<DTK>;
-    case 'user':
-      return [Rows.UserRow()] as ContentDef<DTK>;
-    default:
-      throw new Error('Unexpected object: ' + dataTypeKey);
-  }
-};
-
-export const tileDef = <DTK extends AnyDataTypeKey>(dataTypeKey: DTK) => {
-  switch (dataTypeKey) {
-    case 'file':
-      return [Tiles.FileTile()] as ContentDef<DTK>;
-    case 'user':
-      return [Tiles.UserTile()] as ContentDef<DTK>;
-    default:
-      throw new Error('Unexpected object: ' + dataTypeKey);
+      return contentSettings.views.tile as ContentDef<DTK>;
   }
 };

@@ -8,7 +8,7 @@ import {
 import { AnyDataTypeKey } from '@/components/Table/types';
 import { useState } from 'react';
 import { TABLE_MIN_SIZE as minSize } from '@/components/Table/constants/columnData';
-import { getSavedTableSizing, saveTablesState } from './useTableSavedState';
+import { getSavedTableSizing, saveTablesState } from './useContentSavedState';
 import {
   calculateColumnSizesSum,
   calculateMaxColumnSize,
@@ -60,16 +60,16 @@ export const useTableSizing = (
   const onSizingChange = () => {
     if (!sizingInfo.deltaOffset) return;
 
-    const tableWidth = getTableWidthPx(tableId);
+    const contentWidth = getTableWidthPx(tableId);
 
     const columnKey = sizingInfo.columnSizingStart[0][0];
     const columnIndex = Object.keys(sizing).indexOf(columnKey);
 
     const offsetGlobal = sizingInfo.deltaOffset || 0;
-    const deltaGlobal = (offsetGlobal * 100) / tableWidth;
+    const deltaGlobal = (offsetGlobal * 100) / contentWidth;
 
     const oldOffsetGlobal = oldSizingInfo.deltaOffset || 0;
-    const oldDeltaGlobal = (oldOffsetGlobal * 100) / tableWidth;
+    const oldDeltaGlobal = (oldOffsetGlobal * 100) / contentWidth;
 
     const delta = addF(deltaGlobal, -oldDeltaGlobal);
 
@@ -137,7 +137,7 @@ export const useTableSizing = (
 
     // Normalizes sizing if anything breaks (generally adds/removes 0.01-0.05)
     // (sometimes needed due to point addition and weird user cases, like moving cursor really fast)
-    // May be removed later after overall sizing mechanism imporvements, but this works fine for now
+    // May be removed later after overall sizing mechanism improvements, but this works fine for now
     const newEntries = filterOutHiddenColumns(Object.entries(newSizing));
     const sizesSum = calculateColumnSizesSum(newEntries);
     if (sizesSum !== 100) {

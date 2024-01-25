@@ -34,10 +34,9 @@ const FilesTable = () => {
   return (
     <Table
       id={'table_my_documents'}
-      view='row'
       dataTypeKey='file'
       data={flatData}
-      dataTotalLength={totalDBRowCount}
+      defaultView='table'
       onBottomReached={onBottomReached}
     />
   );

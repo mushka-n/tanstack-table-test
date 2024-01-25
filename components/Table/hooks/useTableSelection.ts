@@ -1,6 +1,7 @@
 import useFilesStore from '@/stores/useFilesStore';
 import { AnyDataTypeKey, DataTypeByKey } from '../types';
 import useUsersStore from '@/stores/useUsersStore';
+import { DataTypeKeys } from '../enums';
 
 type useTableSelectionResult<DTK extends AnyDataTypeKey> = {
   selection: DataTypeByKey<DTK>[] | null;
@@ -14,9 +15,9 @@ export const useTableSelection = <DTK extends AnyDataTypeKey>(
   const userSelection = useTableUserSelection();
 
   switch (dataTypeKey) {
-    case 'file':
+    case DataTypeKeys.File:
       return fileSelection as unknown as useTableSelectionResult<DTK>;
-    case 'user':
+    case DataTypeKeys.User:
       return userSelection as unknown as useTableSelectionResult<DTK>;
     default:
       return {
@@ -26,14 +27,16 @@ export const useTableSelection = <DTK extends AnyDataTypeKey>(
   }
 };
 
-const useTableFileSelection = (): useTableSelectionResult<'file'> => {
-  const selection = useFilesStore((state) => state.selection);
-  const setSelection = useFilesStore((state) => state.setSelection);
-  return { selection, setSelection };
-};
+const useTableFileSelection =
+  (): useTableSelectionResult<DataTypeKeys.File> => {
+    const selection = useFilesStore((state) => state.selection);
+    const setSelection = useFilesStore((state) => state.setSelection);
+    return { selection, setSelection };
+  };
 
-const useTableUserSelection = (): useTableSelectionResult<'user'> => {
-  const selection = useUsersStore((state) => state.selection);
-  const setSelection = useUsersStore((state) => state.setSelection);
-  return { selection, setSelection };
-};
+const useTableUserSelection =
+  (): useTableSelectionResult<DataTypeKeys.User> => {
+    const selection = useUsersStore((state) => state.selection);
+    const setSelection = useUsersStore((state) => state.setSelection);
+    return { selection, setSelection };
+  };

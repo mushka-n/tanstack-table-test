@@ -6,12 +6,14 @@ import {
   ChevronRightIcon,
 } from '@radix-ui/react-icons';
 import './styles.css';
+import { AnyDataType } from '../Table/types';
 
 interface ContextMenuProps {
+  item: AnyDataType;
   children: ReactNode;
 }
 
-const ContextMenu = ({ children }: ContextMenuProps) => {
+const ContextMenu = ({ item, children }: ContextMenuProps) => {
   const [bookmarksChecked, setBookmarksChecked] = useState<boolean>(true);
   const [urlsChecked, setUrlsChecked] = React.useState<boolean>(false);
   const [person, setPerson] = useState<string>('pedro');
@@ -23,6 +25,19 @@ const ContextMenu = ({ children }: ContextMenuProps) => {
       </ContextMenuPrimitive.Trigger>
       <ContextMenuPrimitive.Portal>
         <ContextMenuPrimitive.Content className='ContextMenuContent'>
+          //
+          <ContextMenuPrimitive.Label className='ContextMenuItem'>
+            ITEM ID: {item?.id}
+          </ContextMenuPrimitive.Label>
+          //
+          <ContextMenuPrimitive.Label className='ContextMenuItem'>
+            ITEM TITLE:
+            {
+              /* @ts-expect-error - im lazy */
+              item.title || item.displayName
+            }
+          </ContextMenuPrimitive.Label>
+          //
           <ContextMenuPrimitive.Item className='ContextMenuItem'>
             Back <div className='RightSlot'>⌘+[</div>
           </ContextMenuPrimitive.Item>
@@ -61,9 +76,7 @@ const ContextMenu = ({ children }: ContextMenuProps) => {
               </ContextMenuPrimitive.SubContent>
             </ContextMenuPrimitive.Portal>
           </ContextMenuPrimitive.Sub>
-
           <ContextMenuPrimitive.Separator className='ContextMenuSeparator' />
-
           <ContextMenuPrimitive.CheckboxItem
             className='ContextMenuCheckboxItem'
             checked={bookmarksChecked}
@@ -84,9 +97,7 @@ const ContextMenu = ({ children }: ContextMenuProps) => {
             </ContextMenuPrimitive.ItemIndicator>
             Show Full URLs
           </ContextMenuPrimitive.CheckboxItem>
-
           <ContextMenuPrimitive.Separator className='ContextMenuSeparator' />
-
           <ContextMenuPrimitive.Label className='ContextMenuLabel'>
             People
           </ContextMenuPrimitive.Label>

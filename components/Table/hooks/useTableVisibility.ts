@@ -7,7 +7,10 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import { TABLE_MIN_SIZE as minSize } from '@/components/Table/constants/columnData';
 import { AnyDataTypeKey } from '@/components/Table/types';
 import { addF } from '@/utils/sumFloats';
-import { getSavedTableVisibility, saveTablesState } from './useTableSavedState';
+import {
+  getSavedTableVisibility,
+  saveTablesState,
+} from './useContentSavedState';
 
 export const useTableVisibility = (
   tableId: string,

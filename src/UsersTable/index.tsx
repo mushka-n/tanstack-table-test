@@ -34,6 +34,7 @@ const UsersTable = () => {
   return (
     <Table
       id={'table_accounts_people'}
+      defaultView={'row'}
       dataTypeKey='user'
       data={flatData}
       onBottomReached={onBottomReached}

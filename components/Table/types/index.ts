@@ -1,25 +1,35 @@
 import { DSUser } from '@/types/DSUsers/DSUser';
 import { DSFile } from '@/types/DSItems/DSFile';
-import { AccessorKeys } from '@/components/Table/constants/accessorKeys';
+
+import { ColumnDef } from '@tanstack/react-table';
 
 // Type Maps
 
-type TableItemTypeMap = {
+export type TableDataTypeMap = {
   file: DSFile;
   user: DSUser;
 };
 
 // Types
 
-export type AnyDataType = TableItemTypeMap[keyof TableItemTypeMap];
+export type AnyDataTypeKey = keyof TableDataTypeMap;
 
-export type AnyDataTypeKey = keyof TableItemTypeMap;
+export type AnyDataType = TableDataTypeMap[AnyDataTypeKey];
 
-export type AnyAccessorKey = (typeof AccessorKeys)[keyof typeof AccessorKeys];
-
-export type ContentDefaultView = 'table-row' | 'row' | 'table' | 'tile';
 export type ContentView = 'row' | 'table' | 'tile';
+
+export type ContentSettings<DTK extends AnyDataTypeKey> = {
+  dataTypeKey: DTK;
+  defaultView: ContentView;
+  views: {
+    table: {
+      columns: ColumnDef<DataTypeByKey<DTK>, unknown>[];
+    };
+    row: ColumnDef<DataTypeByKey<DTK>, DataTypeByKey<DTK>>[];
+    tile: ColumnDef<DataTypeByKey<DTK>, DataTypeByKey<DTK>>[];
+  };
+};
 
 // Generics
 
-export type DataTypeByKey<T extends AnyDataTypeKey> = TableItemTypeMap[T];
+export type DataTypeByKey<DTK extends AnyDataTypeKey> = TableDataTypeMap[DTK];

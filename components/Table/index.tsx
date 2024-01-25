@@ -1,22 +1,19 @@
-import {
-  useReactTable,
-  getCoreRowModel,
-  ColumnDef,
-} from '@tanstack/react-table';
-import { AnyDataTypeKey, ContentDefaultView, DataTypeByKey } from './types';
+import { useReactTable, getCoreRowModel } from '@tanstack/react-table';
+import { AnyDataTypeKey, ContentView, DataTypeByKey } from './types';
 import { useTableVisibility } from './hooks/useTableVisibility';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState, ChangeEvent } from 'react';
 import { useTableSizing } from './hooks/useTableSizing';
-import RowView from './views/Row';
+import RowView from './views/RowView';
 import { useContentWidth } from './hooks/useContentWidth';
-import TableView from './views/Table';
-import TileView from './views/Tile';
+import TableView from './views/TableView';
+import TileView from './views/TileView';
 import { useContentDef } from './hooks/useContentDef';
+import ContentContext from './hooks/useContentContext';
 
 interface TableProps<DTK extends AnyDataTypeKey> {
   id: string;
 
-  defaultView?: ContentDefaultView;
+  defaultView?: ContentView;
   dataTypeKey: DTK;
 
   data: DataTypeByKey<DTK>[];
@@ -33,11 +30,13 @@ const Table = <DTK extends AnyDataTypeKey>({
   dataTotalLength,
   onBottomReached,
 }: TableProps<DTK>) => {
+  // const theme = useContext(ThemeContext);
   const containerRef = useRef<HTMLDivElement>(null);
-  const tableWidth = useContentWidth(containerRef);
+  const contentWidth = useContentWidth(containerRef);
 
-  const [viewInternal, setViewInternal] = useState<string>(defaultView);
-  const onChangeViewInternal = (e) => setViewInternal(e.target.value);
+  const [viewInternal, setViewInternal] = useState<ContentView>(defaultView);
+  const onChangeViewInternal = (e: ChangeEvent<HTMLInputElement>) =>
+    setViewInternal(e.target.value as ContentView);
 
   const [sizing, setSizing, onSizingChange, sizingInfo, onSizingInfoChange] =
     useTableSizing(id, dataTypeKey);
@@ -46,10 +45,10 @@ const Table = <DTK extends AnyDataTypeKey>({
 
   const table = useReactTable({
     data,
-    columns: useContentDef(dataTypeKey, viewInternal),
+    columns: useContentDef(dataTypeKey as AnyDataTypeKey, viewInternal),
     getCoreRowModel: getCoreRowModel(),
     state: {
-      columnSizing: sizing,
+      columnSizing: {},
       columnSizingInfo: sizingInfo,
       columnVisibility: visibility,
     },
@@ -59,6 +58,9 @@ const Table = <DTK extends AnyDataTypeKey>({
     onColumnSizingChange: onSizingChange,
     onColumnSizingInfoChange: onSizingInfoChange,
   });
+
+  const level = useContext(ContentContext);
+  console.log(level);
 
   useEffect(() => {
     if (!containerRef?.current || !onBottomReached) return;
@@ -84,18 +86,6 @@ const Table = <DTK extends AnyDataTypeKey>({
       >
         <fieldset style={{ marginBottom: '20px' }}>
           <legend>View</legend>
-
-          <div>
-            <input
-              id={`${id}_table-row-view`}
-              type='radio'
-              value={'table-row'}
-              checked={viewInternal === 'table-row'}
-              onChange={onChangeViewInternal}
-            />
-            <label htmlFor={`${id}_table-row-view`}>Table/Row (Auto)</label>
-          </div>
-
           <div>
             <input
               id={`${id}_table-view`}
@@ -144,7 +134,7 @@ const Table = <DTK extends AnyDataTypeKey>({
                         checked={column.getIsVisible()}
                         onChange={column.getToggleVisibilityHandler()}
                       />
-                      {column.id}
+                      {column.id.split('-').at(-1)}
                     </label>
                   </div>
                 )
@@ -159,50 +149,60 @@ const Table = <DTK extends AnyDataTypeKey>({
         onScroll={onBottomReached}
       >
         <div>
-          <table
-            id={id}
-            style={{
-              tableLayout: 'fixed',
-              position: 'relative',
-              width: '100%',
-              backgroundColor: '#efefeffa',
-              height: '100%',
-              borderCollapse: 'collapse',
+          <ContentContext.Provider
+            value={{
+              dataTypeKey,
+              contentWidth,
+              containerRef,
+              table,
+              tableState: { sizing, visibility },
             }}
-            cellPadding={0}
-            cellSpacing={0}
           >
-            {viewInternal === 'table' && (
-              <TableView
-                dataTypeKey={dataTypeKey}
-                containerRef={containerRef}
-                tableWidth={tableWidth}
-                headers={table.getHeaderGroups()[0].headers}
-                rows={table.getRowModel().rows}
-                sizing={sizing}
-                dataTotalLength={dataTotalLength}
-              />
-            )}
+            <table
+              id={id}
+              style={{
+                tableLayout: 'fixed',
+                position: 'relative',
+                width: '100%',
+                backgroundColor: '#efefeffa',
+                height: '100%',
+                borderCollapse: 'collapse',
+              }}
+              cellPadding={0}
+              cellSpacing={0}
+            >
+              {viewInternal === 'table' && (
+                <TableView
+                  dataTypeKey={dataTypeKey}
+                  containerRef={containerRef}
+                  contentWidth={contentWidth}
+                  headers={table.getHeaderGroups()[0].headers}
+                  rows={table.getRowModel().rows}
+                  sizing={sizing}
+                  dataTotalLength={dataTotalLength}
+                />
+              )}
 
-            {viewInternal === 'row' && (
-              <RowView
-                dataTypeKey={dataTypeKey}
-                containerRef={containerRef}
-                rows={table.getRowModel().rows}
-                dataTotalLength={dataTotalLength}
-              />
-            )}
+              {viewInternal === 'row' && (
+                <RowView
+                  dataTypeKey={dataTypeKey}
+                  containerRef={containerRef}
+                  rows={table.getRowModel().rows}
+                  dataTotalLength={dataTotalLength}
+                />
+              )}
 
-            {viewInternal === 'tile' && (
-              <TileView
-                dataTypeKey={dataTypeKey}
-                containerRef={containerRef}
-                tableWidth={tableWidth}
-                rows={table.getRowModel().rows}
-                dataTotalLength={dataTotalLength}
-              />
-            )}
-          </table>
+              {viewInternal === 'tile' && (
+                <TileView
+                  dataTypeKey={dataTypeKey}
+                  containerRef={containerRef}
+                  contentWidth={contentWidth}
+                  rows={table.getRowModel().rows}
+                  dataTotalLength={dataTotalLength}
+                />
+              )}
+            </table>
+          </ContentContext.Provider>
         </div>
       </div>
     </div>
