@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react';
 import Table from '@/components/Table';
 import { DSUserApiResponse, getUsers } from '@/api/accounts/people';
 import { useInfiniteQuery } from '@tanstack/react-query';
-
 const fetchSize = 100;
 
 const UsersTable = () => {
@@ -11,7 +10,7 @@ const UsersTable = () => {
     fetchNextPage,
     isFetchingNextPage: isFetching,
   } = useInfiniteQuery<DSUserApiResponse>({
-    queryKey: ['users-table-data', []],
+    queryKey: ['users-data', []],
     queryFn: async ({ pageParam }) =>
       getUsers((pageParam as number) * fetchSize, fetchSize),
     getNextPageParam: (_, allPages) => allPages.length,
@@ -35,7 +34,7 @@ const UsersTable = () => {
     <Table
       id={'table_accounts_people'}
       defaultView={'row'}
-      dataTypeKey='user'
+      dataTypeKey={'user'}
       data={flatData}
       onBottomReached={onBottomReached}
     />

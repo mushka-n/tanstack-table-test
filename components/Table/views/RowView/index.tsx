@@ -4,7 +4,7 @@ import styles from '../TableView/Body/body.module.css';
 import { RefObject } from 'react';
 import ContextMenu from '@/components/ContextMenu';
 import { useTableVirtualization } from '../../hooks/useTableVirtualization';
-import { useTableSelection } from '../../hooks/useTableSelection';
+import { useContentSelection } from '../../hooks/useContentSelection';
 
 interface RowViewProps<DTK extends AnyDataTypeKey> {
   dataTypeKey: DTK;
@@ -19,7 +19,7 @@ const RowView = <DTK extends AnyDataTypeKey>({
   rows,
   // dataTotalLength,
 }: RowViewProps<DTK>) => {
-  const { selection, setSelection } = useTableSelection(dataTypeKey);
+  const { selection, setSelection } = useContentSelection(dataTypeKey);
   const canSelect = !!selection && !!setSelection;
 
   const { vRows, offsetTop, offsetBottom } = useTableVirtualization(

@@ -1,23 +1,30 @@
-import AuthorColumn from './File/Author';
-import CreatedDateColumn from './File/CreatedDate';
-import NameItemColumn from './File/NameItem';
-import NameUserColumn from './User/NameUser';
-import DateUpdatedColumn from './File/DateUpdated';
-import SizeColumn from './File/Size';
-import FileTypeColumn from './File/FileType';
-import EmailColumn from './User/Email';
-import TypeUserColumn from './User/TypeUser';
-import ContextBtnColumn from './ContextBtn';
+// Common
+import CommonContextBtnCell from './Common/CommonContextBtnCell';
+import CommonDateCell from './Common/CommonDateCell';
+import CommonStringCell from './Common/CommonStringCell';
 
-export default {
-  AuthorColumn,
-  CreatedDateColumn,
-  NameItemColumn,
-  NameUserColumn,
-  DateUpdatedColumn,
-  SizeColumn,
-  FileTypeColumn,
-  EmailColumn,
-  TypeUserColumn,
-  ContextBtnColumn,
+// File
+import FileTitleCell from './File/Title';
+import FileAuthorCell from './File/Author';
+import FileTypeCell from './File/Type';
+
+// User
+import UserTypeCell from './User/Type';
+
+//
+
+export const CommonCells = {
+  CommonStringCell,
+  CommonDateCell,
+  CommonContextBtnCell,
+};
+
+export const FileCells = {
+  FileTitleCell,
+  FileAuthorCell,
+  FileTypeCell,
+};
+
+export const UserCells = {
+  UserTypeCell,
 };

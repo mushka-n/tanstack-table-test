@@ -1,17 +1,14 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { DataTypeKeys, FileColumnIds } from '../enums';
+import { FileColumnIds } from '../enums';
 import { DSFile } from '@/types/DSItems/DSFile';
-import NameItemCell from '../views/TableView/Body/Columns/File/NameItem/NameItemCell';
 import { DSUser } from '@/types/DSUsers/DSUser';
-import FileRowCell from '../views/RowView/Rows/File/FileRowCell';
-import FileTileCell from '../views/TileView/Tiles/File/FileTileCell';
-import CommonDateCell from '../views/TableView/Body/Columns/Common/CommonDateCell';
-import CommonStringCell from '../views/TableView/Body/Columns/Common/CommonStringCell';
 import { ContentSettings } from '../types';
-import CommonContextBtnCell from '../views/TableView/Body/Columns/Common/CommonContextBtnCell';
+import { CommonCells, FileCells } from '../views/TableView/Body/Columns';
+import Rows from '../views/RowView/Rows';
+import Tiles from '../views/TileView/Tiles';
 
-export const FileContentSettings: ContentSettings<DataTypeKeys.File> = {
-  dataTypeKey: DataTypeKeys.File,
+export const FileContentSettings: ContentSettings<'file'> = {
+  dataTypeKey: 'file',
   defaultView: 'table',
 
   views: {
@@ -23,7 +20,7 @@ export const FileContentSettings: ContentSettings<DataTypeKeys.File> = {
           header: 'Name',
           isDefaultVisible: true,
           defaultSize: 40,
-          cell: NameItemCell,
+          cell: FileCells.FileTitleCell,
         },
         {
           id: FileColumnIds.Author,
@@ -39,7 +36,7 @@ export const FileContentSettings: ContentSettings<DataTypeKeys.File> = {
           header: 'Created',
           isDefaultVisible: true,
           defaultSize: 15,
-          cell: CommonDateCell,
+          cell: CommonCells.CommonDateCell,
         },
         {
           id: FileColumnIds.DateUpdated,
@@ -47,7 +44,7 @@ export const FileContentSettings: ContentSettings<DataTypeKeys.File> = {
           header: 'Updated',
           isDefaultVisible: true,
           defaultSize: 15,
-          cell: CommonDateCell,
+          cell: CommonCells.CommonDateCell,
         },
         {
           id: FileColumnIds.Size,
@@ -55,7 +52,7 @@ export const FileContentSettings: ContentSettings<DataTypeKeys.File> = {
           header: 'Size',
           isDefaultVisible: true,
           defaultSize: 15,
-          cell: CommonStringCell,
+          cell: CommonCells.CommonStringCell,
         },
         {
           id: FileColumnIds.Type,
@@ -63,14 +60,14 @@ export const FileContentSettings: ContentSettings<DataTypeKeys.File> = {
           header: 'Type',
           isDefaultVisible: true,
           defaultSize: 15,
-          cell: CommonStringCell,
+          cell: CommonCells.CommonStringCell,
         },
         {
           id: 'contextBtn',
           header: 'o',
           enableHiding: false,
           size: 0,
-          cell: CommonContextBtnCell,
+          cell: CommonCells.CommonContextBtnCell,
         },
       ] as ColumnDef<DSFile, unknown>[],
     },
@@ -79,7 +76,7 @@ export const FileContentSettings: ContentSettings<DataTypeKeys.File> = {
       {
         id: 'file-row',
         accessorFn: (item) => item,
-        cell: FileRowCell,
+        cell: Rows.FileRow,
       },
     ] as ColumnDef<DSFile, DSFile>[],
 
@@ -87,7 +84,7 @@ export const FileContentSettings: ContentSettings<DataTypeKeys.File> = {
       {
         id: 'file-tile',
         accessorFn: (item) => item,
-        cell: FileTileCell,
+        cell: Tiles.FileTile,
       },
     ] as ColumnDef<DSFile, DSFile>[],
   },

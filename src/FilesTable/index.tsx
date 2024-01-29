@@ -11,7 +11,7 @@ const FilesTable = () => {
     fetchNextPage,
     isFetchingNextPage: isFetching,
   } = useInfiniteQuery<DSFileApiResponse>({
-    queryKey: ['files-table-data', []],
+    queryKey: ['files-data', []],
     queryFn: async ({ pageParam }) =>
       getFiles((pageParam as number) * fetchSize, fetchSize),
     getNextPageParam: (_, allPages) => allPages.length,

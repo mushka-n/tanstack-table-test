@@ -10,6 +10,10 @@ export type TableDataTypeMap = {
   user: DSUser;
 };
 
+export type ContentSettingsMap = {
+  [DTK in AnyDataTypeKey]: ContentSettings<DTK>;
+};
+
 // Types
 
 export type AnyDataTypeKey = keyof TableDataTypeMap;

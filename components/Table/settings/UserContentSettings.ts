@@ -1,13 +1,14 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { DataTypeKeys, UserColumnIds } from '../enums';
+import { UserColumnIds } from '../enums';
 import { DSUser } from '@/types/DSUsers/DSUser';
-import CommonStringCell from '../views/TableView/Body/Columns/Common/CommonStringCell';
 import { ContentSettings } from '../types';
-import { DSUserRole } from '@/types/DSUsers/DSUserRole';
-import CommonContextBtnCell from '../views/TableView/Body/Columns/Common/CommonContextBtnCell';
 
-export const UserContentSettings: ContentSettings<DataTypeKeys.User> = {
-  dataTypeKey: DataTypeKeys.User,
+import { CommonCells, UserCells } from '../views/TableView/Body/Columns';
+import Rows from '../views/RowView/Rows';
+import Tiles from '../views/TileView/Tiles';
+
+export const UserContentSettings: ContentSettings<'user'> = {
+  dataTypeKey: 'user',
   defaultView: 'table',
 
   views: {
@@ -20,7 +21,7 @@ export const UserContentSettings: ContentSettings<DataTypeKeys.User> = {
           isDefaultVisible: true,
           enableHiding: false,
           defaultSize: 100 / 3,
-          cell: CommonStringCell,
+          cell: CommonCells.CommonStringCell,
         },
         {
           id: UserColumnIds.Type,
@@ -28,22 +29,22 @@ export const UserContentSettings: ContentSettings<DataTypeKeys.User> = {
           header: 'Author',
           isDefaultVisible: true,
           defaultSize: 100 / 3,
-          cell: CommonStringCell,
-        } as ColumnDef<DSUser, DSUserRole>,
+          cell: UserCells.UserTypeCell,
+        },
         {
           id: UserColumnIds.Email,
           accessorKey: 'email',
           header: 'Email',
           isDefaultVisible: true,
           defaultSize: 100 / 3,
-          cell: CommonStringCell,
-        } as ColumnDef<DSUser, string>,
+          cell: CommonCells.CommonStringCell,
+        },
         {
           id: 'contextBtn',
           header: 'o',
           enableHiding: false,
           size: 0,
-          cell: CommonContextBtnCell,
+          cell: CommonCells.CommonContextBtnCell,
         },
       ] as ColumnDef<DSUser, unknown>[],
     },
@@ -52,8 +53,8 @@ export const UserContentSettings: ContentSettings<DataTypeKeys.User> = {
       {
         id: 'file-row',
         accessorKey: 'displayName',
-        // accessorFn: (item) => item,
-        cell: CommonStringCell,
+        accessorFn: (item) => item,
+        cell: Rows.UserRow,
       },
     ] as ColumnDef<DSUser, DSUser>[],
 
@@ -61,8 +62,8 @@ export const UserContentSettings: ContentSettings<DataTypeKeys.User> = {
       {
         id: 'file-tile',
         accessorKey: 'displayName',
-        // accessorFn: (item) => item.displayName,
-        cell: CommonStringCell,
+        accessorFn: (item) => item,
+        cell: Tiles.UserTile,
       },
     ] as ColumnDef<DSUser, DSUser>[],
   },

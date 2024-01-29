@@ -1,8 +1,3 @@
-export enum DataTypeKeys {
-  File = 'file',
-  User = 'user',
-}
-
 export enum FileColumnIds {
   Title = 'file-column-title',
   Author = 'file-column-author',

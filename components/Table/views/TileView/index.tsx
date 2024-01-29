@@ -3,7 +3,7 @@ import { AnyDataTypeKey, DataTypeByKey } from '@/components/Table/types';
 import styles from '../TableView/Body/body.module.css';
 import { RefObject, useEffect, useState } from 'react';
 import ContextMenu from '@/components/ContextMenu';
-import { useTableSelection } from '../../hooks/useTableSelection';
+import { useContentSelection } from '../../hooks/useContentSelection';
 import { useTileVirtualization } from '../../hooks/useTileVirtualization';
 
 interface TileViewProps<DTK extends AnyDataTypeKey> {
@@ -44,7 +44,7 @@ const TileView = <DTK extends AnyDataTypeKey>({
 }: TileViewProps<DTK>) => {
   const [colsNum, setColsNum] = useState<number>(getColesNum(contentWidth));
 
-  const { selection, setSelection } = useTableSelection(dataTypeKey);
+  const { selection, setSelection } = useContentSelection(dataTypeKey);
   const canSelect = !!selection && !!setSelection;
 
   const { vRows, totalSize, measure } = useTileVirtualization(

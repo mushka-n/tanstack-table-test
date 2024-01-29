@@ -12,13 +12,10 @@ import ContentContext from './hooks/useContentContext';
 
 interface TableProps<DTK extends AnyDataTypeKey> {
   id: string;
-
   defaultView?: ContentView;
   dataTypeKey: DTK;
-
   data: DataTypeByKey<DTK>[];
   dataTotalLength?: number;
-
   onBottomReached?: () => void;
 }
 

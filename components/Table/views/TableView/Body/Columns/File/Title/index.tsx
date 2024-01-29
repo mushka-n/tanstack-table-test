@@ -1,14 +1,15 @@
 import { CellContext } from '@tanstack/react-table';
 import { DSFile } from '@/types/DSItems/DSFile';
+import './styles.css';
 import DocxIcon from '@/src/icons/docx.svg';
-import { useTableSelection } from '@/components/Table/hooks/useTableSelection';
+import { useContentSelection } from '@/components/Table/hooks/useContentSelection';
 import { MouseEvent } from 'react';
-import { DataTypeKeys } from '@/components/Table/enums';
 
-const FileRowCell = ({ getValue }: CellContext<DSFile, DSFile>) => {
+const FileTitleCell = ({ getValue }: CellContext<DSFile, DSFile>) => {
   const item = getValue();
 
-  const { selection, setSelection } = useTableSelection(DataTypeKeys.File);
+  const { selection, setSelection } = useContentSelection('file');
+
   const isSelected = selection?.includes(item);
 
   const onToggleSelect = (e: MouseEvent<HTMLElement>) => {
@@ -30,23 +31,8 @@ const FileRowCell = ({ getValue }: CellContext<DSFile, DSFile>) => {
         <img src={DocxIcon} className='icon' />
       </div>
 
-      <div
-        style={{
-          width: '400px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '4px',
-        }}
-      >
-        <div className='text' style={{ fontSize: '16px' }}>
-          {item.title}
-        </div>
-
-        <div style={{ fontSize: '14px' }}>
-          {item.created.toLocaleString('en-US', { hour12: false })}
-        </div>
-      </div>
+      <div className='text'>{item.title}</div>
     </div>
   );
 };
-export default FileRowCell;
+export default FileTitleCell;
