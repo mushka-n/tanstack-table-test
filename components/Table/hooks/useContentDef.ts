@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { AnyDataTypeKey, DataTypeByKey } from '@/components/Table/types';
-import { ContentSettings } from '../settings';
+import { ContentViews } from '../settings';
+import { ColumnIdsByKey, ContentSettings } from '../types/contentSettings';
 
 type ContentDef<DTK extends AnyDataTypeKey> = ColumnDef<
   DataTypeByKey<DTK>,
@@ -9,17 +10,36 @@ type ContentDef<DTK extends AnyDataTypeKey> = ColumnDef<
 
 export const useContentDef = <DTK extends AnyDataTypeKey>(
   dataTypeKey: DTK,
-  view: 'row' | 'table' | 'tile'
+  view: 'table' | 'row' | 'tile',
+  settings: ContentSettings<DTK>
 ): ContentDef<DTK> => {
-  const contentSettings =
-    ContentSettings[dataTypeKey as keyof typeof ContentSettings];
+  const contentViews = ContentViews[dataTypeKey as keyof typeof ContentViews];
 
-  switch (view) {
-    case 'table':
-      return contentSettings.views.table.columns as ContentDef<DTK>;
-    case 'row':
-      return contentSettings.views.row as ContentDef<DTK>;
-    case 'tile':
-      return contentSettings.views.tile as ContentDef<DTK>;
+  if (view === 'table' && !!settings.columns) {
+    const tableDef = contentViews.table as ContentDef<DTK>;
+    const activeIds = settings.columns.map(({ id }) => id);
+    return tableDef.filter(({ id }) =>
+      activeIds.includes(id as ColumnIdsByKey<DTK>)
+    );
   }
+
+  if (view === 'row' && !!settings.row) {
+    const rowDef = contentViews.row as ContentDef<DTK>;
+    const activeRowId = settings.row;
+    const activeRow = rowDef.filter(({ id }) => id === activeRowId);
+    return activeRow;
+  }
+
+  if (view === 'tile' && !!settings.tile) {
+    const tileDef = contentViews.tile as ContentDef<DTK>;
+    const activeTileId = settings.tile;
+    const activeTile = tileDef.filter(({ id }) => id === activeTileId);
+    return activeTile;
+  }
+
+  console.error(
+    `ContentDef was not found.\n${dataTypeKey}ContentSettings doesn't have ${view} view.`
+  );
+
+  return [];
 };

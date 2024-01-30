@@ -1,8 +1,24 @@
-import { ContentSettingsMap } from '../types';
-import { FileContentSettings } from './FileContentSettings';
-import { UserContentSettings } from './UserContentSettings';
+import {
+  ContentViewsMap,
+  DefaultContentSettingsMap,
+} from '../types/contentSettings';
 
-export const ContentSettings: ContentSettingsMap = {
-  file: FileContentSettings,
-  user: UserContentSettings,
+import {
+  FileContentViews,
+  FileDefaultContentSettings,
+} from './FileContentSettings';
+
+import {
+  UserContentViews,
+  UserDefaultContentSettings,
+} from './UserContentSettings';
+
+export const ContentViews: ContentViewsMap = {
+  file: FileContentViews,
+  user: UserContentViews,
+} as const;
+
+export const DefaultContentSettings: DefaultContentSettingsMap = {
+  file: FileDefaultContentSettings,
+  user: UserDefaultContentSettings,
 };

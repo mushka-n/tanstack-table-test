@@ -3,7 +3,6 @@ import {
   CONTEXT_BTN_SIZE_PX,
   TABLE_MIN_SIZE,
 } from '@/components/Table/constants/columnData';
-import { AccessorKeys } from '@/components/Table/constants/accessorKeys';
 
 interface TableHeaderProps {
   contentWidth: number;
@@ -27,7 +26,7 @@ const TableHeader = ({ headers, sizing, contentWidth }: TableHeaderProps) => {
             key={header.id}
             colSpan={1}
             style={
-              header.id !== AccessorKeys.ContextBtn
+              header.id !== 'contextBtn'
                 ? {
                     position: 'relative',
                     height: '40px',
@@ -46,7 +45,7 @@ const TableHeader = ({ headers, sizing, contentWidth }: TableHeaderProps) => {
           >
             <div
               style={
-                header.id !== AccessorKeys.ContextBtn
+                header.id !== 'contextBtn'
                   ? {
                       width: `${
                         (contentWidth - CONTEXT_BTN_SIZE_PX) / TABLE_MIN_SIZE

@@ -11,13 +11,14 @@ import {
   getSavedTableVisibility,
   saveTablesState,
 } from './useContentSavedState';
+import { ContentSettings } from '../types/contentSettings';
 
 export const useTableVisibility = (
   tableId: string,
-  dataTypeKey: AnyDataTypeKey
+  settings: ContentSettings<AnyDataTypeKey>
 ): [VisibilityState, typeof onVisibilityChange] => {
   const [visibility, setVisibility] = useState(
-    getSavedTableVisibility(tableId, dataTypeKey)
+    getSavedTableVisibility(tableId, settings)
   );
 
   const onVisibilityChange = (
@@ -84,9 +85,9 @@ export const useTableVisibility = (
 
     saveTablesState({
       tableId,
-      dataTypeKey,
       sizing: newSizing,
       visibility: newVisibility,
+      settings,
     });
   };
 

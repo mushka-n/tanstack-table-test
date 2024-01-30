@@ -1,28 +1,34 @@
-import { ContentSettings } from '../settings';
 import { AnyDataTypeKey } from '../types';
+import { ContentSettings } from '../types/contentSettings';
 
-export const getDefaultVisibility = (dataTypeKey: AnyDataTypeKey) => {
-  const contentSettings = ContentSettings[dataTypeKey];
-  const columnData = contentSettings.views.table.columns as {
-    id: string;
-    isDefaultVisible: boolean;
-  }[];
+export const getDefaultVisibility = (
+  settings: ContentSettings<AnyDataTypeKey>
+) => {
+  if (!settings.columns) {
+    console.error(
+      'Default visibility could not be computed.',
+      'Content Settings doesn`t have "columns" property.'
+    );
+    return {};
+  }
 
   const result: { [key: string]: boolean } = {};
-  columnData.forEach(
-    ({ id, isDefaultVisible }) => (result[id!] = isDefaultVisible)
+  settings.columns.forEach(
+    ({ id, isVisible }) => (result[`${id}`] = isVisible ?? true)
   );
   return result;
 };
 
-export const getDefaultSizing = (dataTypeKey: AnyDataTypeKey) => {
-  const contentSettings = ContentSettings[dataTypeKey];
-  const columnData = contentSettings.views.table.columns as {
-    id: string;
-    defaultSize: number;
-  }[];
+export const getDefaultSizing = (settings: ContentSettings<AnyDataTypeKey>) => {
+  if (!settings.columns) {
+    console.error(
+      'Default sizing could not be computed.',
+      'ContentSettings doesn`t have "columns" property.'
+    );
+    return {};
+  }
 
   const result: { [key: string]: number } = {};
-  columnData.forEach(({ id, defaultSize }) => (result[id!] = defaultSize));
+  settings.columns.forEach(({ id, size }) => (result[`${id}`] = size || 10));
   return result;
 };

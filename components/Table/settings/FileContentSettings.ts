@@ -1,91 +1,109 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { FileColumnIds } from '../enums';
 import { DSFile } from '@/types/DSItems/DSFile';
 import { DSUser } from '@/types/DSUsers/DSUser';
-import { ContentSettings } from '../types';
 import { CommonCells, FileCells } from '../views/TableView/Body/Columns';
 import Rows from '../views/RowView/Rows';
 import Tiles from '../views/TileView/Tiles';
+import { ContentViews, ContentSettings } from '../types/contentSettings';
+import { ContentDefIds } from '../constants/contentDefIds';
 
-export const FileContentSettings: ContentSettings<'file'> = {
-  dataTypeKey: 'file',
+//
+
+const FileColumnIds = ContentDefIds.file.columns;
+const FileRowIds = ContentDefIds.file.rows;
+const FileTileIds = ContentDefIds.file.tiles;
+
+//
+
+export const FileDefaultContentSettings: ContentSettings<'file'> = {
+  availableViews: ['table', 'row', 'tile'],
   defaultView: 'table',
 
-  views: {
-    table: {
-      columns: [
-        {
-          id: FileColumnIds.Title,
-          accessorFn: (item) => item,
-          header: 'Name',
-          isDefaultVisible: true,
-          defaultSize: 40,
-          cell: FileCells.FileTitleCell,
-        },
-        {
-          id: FileColumnIds.Author,
-          accessorKey: 'createdBy',
-          header: 'Author',
-          isDefaultVisible: false,
-          defaultSize: -15,
-          cell: ({ getValue }) => getValue().displayName,
-        } as ColumnDef<DSFile, DSUser>,
-        {
-          id: FileColumnIds.DateCreated,
-          accessorKey: 'created',
-          header: 'Created',
-          isDefaultVisible: true,
-          defaultSize: 15,
-          cell: CommonCells.CommonDateCell,
-        },
-        {
-          id: FileColumnIds.DateUpdated,
-          accessorKey: 'updated',
-          header: 'Updated',
-          isDefaultVisible: true,
-          defaultSize: 15,
-          cell: CommonCells.CommonDateCell,
-        },
-        {
-          id: FileColumnIds.Size,
-          accessorKey: 'contentLength',
-          header: 'Size',
-          isDefaultVisible: true,
-          defaultSize: 15,
-          cell: CommonCells.CommonStringCell,
-        },
-        {
-          id: FileColumnIds.Type,
-          accessorKey: 'fileType',
-          header: 'Type',
-          isDefaultVisible: true,
-          defaultSize: 15,
-          cell: CommonCells.CommonStringCell,
-        },
-        {
-          id: 'contextBtn',
-          header: 'o',
-          enableHiding: false,
-          size: 0,
-          cell: CommonCells.CommonContextBtnCell,
-        },
-      ] as ColumnDef<DSFile, unknown>[],
+  columns: [
+    { id: FileColumnIds.title, isVisible: true, size: 40 },
+    { id: FileColumnIds.author, isVisible: false, size: -15 },
+    { id: FileColumnIds.dateCreated, isVisible: true, size: 15 },
+    { id: FileColumnIds.dateUpdated, isVisible: true, size: 15 },
+    { id: FileColumnIds.size, isVisible: true, size: 15 },
+    { id: FileColumnIds.type, isVisible: true, size: 15 },
+  ],
+  row: FileRowIds.default,
+  tile: FileTileIds.default,
+};
+
+//
+
+export const FileContentViews: ContentViews<DSFile> = {
+  table: [
+    {
+      id: FileColumnIds.title,
+      accessorFn: (item) => item,
+      header: 'Name',
+      cell: FileCells.FileTitleCell,
     },
+    {
+      id: FileColumnIds.room,
+      accessorKey: 'roomName',
+      header: 'Room',
+      cell: CommonCells.CommonStringCell,
+    } as ColumnDef<DSFile, string>,
+    {
+      id: FileColumnIds.author,
+      accessorKey: 'createdBy',
+      header: 'Author',
+      cell: ({ getValue }) => getValue().displayName,
+    } as ColumnDef<DSFile, DSUser>,
+    {
+      id: FileColumnIds.dateCreated,
+      accessorKey: 'created',
+      header: 'Created',
+      cell: CommonCells.CommonDateCell,
+    },
+    {
+      id: FileColumnIds.dateUpdated,
+      accessorKey: 'updated',
+      header: 'Updated',
+      cell: CommonCells.CommonDateCell,
+    },
+    {
+      id: FileColumnIds.size,
+      accessorKey: 'contentLength',
+      header: 'Size',
+      cell: CommonCells.CommonStringCell,
+    },
+    {
+      id: FileColumnIds.type,
+      accessorKey: 'fileType',
+      header: 'Type',
+      cell: CommonCells.CommonStringCell,
+    },
+    {
+      id: FileColumnIds.contextBtn,
+      header: 'o',
+      enableHiding: false,
+      size: 0,
+      cell: CommonCells.CommonContextBtnCell,
+    },
+  ] as ColumnDef<DSFile, unknown>[],
 
-    row: [
-      {
-        id: 'file-row',
-        accessorFn: (item) => item,
-        cell: Rows.FileRow,
-      },
-    ] as ColumnDef<DSFile, DSFile>[],
+  row: [
+    {
+      id: FileRowIds.default,
+      accessorFn: (item) => item,
+      cell: Rows.FileRow,
+    },
+    {
+      id: FileRowIds.trash,
+      accessorFn: (item) => item,
+      cell: Rows.FileRow,
+    },
+  ] as ColumnDef<DSFile, DSFile>[],
 
-    tile: [
-      {
-        id: 'file-tile',
-        accessorFn: (item) => item,
-        cell: Tiles.FileTile,
-      },
-    ] as ColumnDef<DSFile, DSFile>[],
-  },
+  tile: [
+    {
+      id: FileTileIds.default,
+      accessorFn: (item) => item,
+      cell: Tiles.FileTile,
+    },
+  ] as ColumnDef<DSFile, DSFile>[],
 };

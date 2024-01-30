@@ -5,39 +5,40 @@ import {
   getDefaultSizing,
   getDefaultVisibility,
 } from './useContentDefaultState';
+import { ContentSettings } from '../types/contentSettings';
 
 export const getSavedTableSizing = (
   tableId: string,
-  dataTypeKey: AnyDataTypeKey
+  settings: ContentSettings<AnyDataTypeKey>
 ): ColumnSizingState => {
   const tablesDataLS = localStorage.getItem('tables_state');
   const tablesData = tablesDataLS && JSON.parse(tablesDataLS);
 
-  if (!tablesData?.[tableId]) return getDefaultSizing(dataTypeKey);
+  if (!tablesData?.[tableId]) return getDefaultSizing(settings);
   return tablesData[tableId].sizing;
 };
 
 export const getSavedTableVisibility = (
   tableId: string,
-  dataTypeKey: AnyDataTypeKey
+  settings: ContentSettings<AnyDataTypeKey>
 ): VisibilityState => {
   const tablesDataLS = localStorage.getItem('tables_state');
   const tablesData = tablesDataLS && JSON.parse(tablesDataLS);
 
-  if (!tablesData?.[tableId]) return getDefaultVisibility(dataTypeKey);
+  if (!tablesData?.[tableId]) return getDefaultVisibility(settings);
   return tablesData[tableId].visibility;
 };
 
 export const saveTablesState = ({
   tableId,
-  dataTypeKey,
   sizing,
   visibility,
+  settings,
 }: {
   tableId: string;
-  dataTypeKey: AnyDataTypeKey;
   sizing?: ColumnSizingState;
   visibility?: VisibilityState;
+  settings: ContentSettings<AnyDataTypeKey>;
 }) => {
   throttle(() => {
     const tablesStateLS = localStorage.getItem('tables_state');
@@ -45,8 +46,8 @@ export const saveTablesState = ({
 
     if (!tablesState?.[tableId]) {
       const defaultTableState = {
-        sizing: getDefaultSizing(dataTypeKey),
-        visibility: getDefaultVisibility(dataTypeKey),
+        sizing: getDefaultSizing(settings),
+        visibility: getDefaultVisibility(settings),
       };
       if (!tablesStateLS) tablesState = { [tableId]: defaultTableState };
       else tablesState[tableId] = defaultTableState;

@@ -38,6 +38,27 @@ const FilesTable = () => {
       data={flatData}
       defaultView='table'
       onBottomReached={onBottomReached}
+      settings={{
+        availableViews: ['table', 'row', 'tile'],
+        defaultView: 'table',
+        columns: [
+          { id: 'file-column-title', isVisible: true, size: 50 },
+          { id: 'file-column-room', isVisible: true, size: 50 },
+          { id: 'file-column-author', isVisible: false, size: -15 },
+        ],
+        row: 'file-row-default',
+        tile: 'file-tile-default',
+      }}
+
+      // settingsFn={(defaultSettings) => ({
+      //   ...defaultSettings,
+      //   columns: [
+      //     ...defaultSettings.columns,
+      //     { id: 'file-column-room', isVisible: true, size: 15 },
+      //     { id: 'file-column-author', isVisible: false, size: -15 },
+      //   ],
+      //   tile: 'file-tile-default',
+      // })}
     />
   );
 };

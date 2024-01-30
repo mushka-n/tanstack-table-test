@@ -19,10 +19,11 @@ import {
   findMinEntry,
   getTableWidthPx,
 } from '../utils';
+import { ContentSettings } from '../types/contentSettings';
 
 export const useTableSizing = (
   tableId: string,
-  dataTypeKey: AnyDataTypeKey
+  settings: ContentSettings<AnyDataTypeKey>
 ): [
   ColumnSizingState,
   typeof setSizing,
@@ -31,7 +32,7 @@ export const useTableSizing = (
   typeof onSizingInfoChange,
 ] => {
   const [sizing, setSizing] = useState<ColumnSizingState>(
-    getSavedTableSizing(tableId, dataTypeKey)
+    getSavedTableSizing(tableId, settings)
   );
 
   const [sizingInfo, setSizingInfo] = useState<ColumnSizingInfoState>({
@@ -152,7 +153,7 @@ export const useTableSizing = (
     }
 
     setSizing(newSizing);
-    saveTablesState({ tableId, dataTypeKey, sizing: newSizing });
+    saveTablesState({ tableId, sizing: newSizing, settings });
   };
 
   //

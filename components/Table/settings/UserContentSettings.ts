@@ -1,70 +1,68 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { UserColumnIds } from '../enums';
 import { DSUser } from '@/types/DSUsers/DSUser';
-import { ContentSettings } from '../types';
+import { ContentViews, ContentSettings } from '../types/contentSettings';
 
 import { CommonCells, UserCells } from '../views/TableView/Body/Columns';
 import Rows from '../views/RowView/Rows';
-import Tiles from '../views/TileView/Tiles';
+import { ContentDefIds } from '../constants/contentDefIds';
 
-export const UserContentSettings: ContentSettings<'user'> = {
-  dataTypeKey: 'user',
+//
+
+const UserColumnIds = ContentDefIds.user.columns;
+const UserRowIds = ContentDefIds.user.rows;
+
+//
+
+export const UserDefaultContentSettings: ContentSettings<'user'> = {
+  availableViews: ['table', 'row'],
   defaultView: 'table',
 
-  views: {
-    table: {
-      columns: [
-        {
-          id: UserColumnIds.Name,
-          accessorKey: 'displayName',
-          header: 'Name',
-          isDefaultVisible: true,
-          enableHiding: false,
-          defaultSize: 100 / 3,
-          cell: CommonCells.CommonStringCell,
-        },
-        {
-          id: UserColumnIds.Type,
-          accessorKey: 'role',
-          header: 'Author',
-          isDefaultVisible: true,
-          defaultSize: 100 / 3,
-          cell: UserCells.UserTypeCell,
-        },
-        {
-          id: UserColumnIds.Email,
-          accessorKey: 'email',
-          header: 'Email',
-          isDefaultVisible: true,
-          defaultSize: 100 / 3,
-          cell: CommonCells.CommonStringCell,
-        },
-        {
-          id: 'contextBtn',
-          header: 'o',
-          enableHiding: false,
-          size: 0,
-          cell: CommonCells.CommonContextBtnCell,
-        },
-      ] as ColumnDef<DSUser, unknown>[],
+  columns: [
+    { id: UserColumnIds.Name, isVisible: true, size: 100 / 3 },
+    { id: UserColumnIds.Type, isVisible: true, size: 100 / 3 },
+    { id: UserColumnIds.Email, isVisible: true, size: 100 / 3 },
+  ],
+  row: UserRowIds.Default,
+} as const;
+
+//
+
+export const UserContentViews: ContentViews<DSUser> = {
+  table: [
+    {
+      id: UserColumnIds.Name,
+      accessorKey: 'displayName',
+      header: 'Name',
+      cell: CommonCells.CommonStringCell,
     },
+    {
+      id: UserColumnIds.Type,
+      accessorKey: 'role',
+      header: 'Author',
+      cell: UserCells.UserTypeCell,
+    },
+    {
+      id: UserColumnIds.Email,
+      accessorKey: 'email',
+      header: 'Email',
+      cell: CommonCells.CommonStringCell,
+    },
+    {
+      id: UserColumnIds.ContextBtn,
+      header: 'o',
+      enableHiding: false,
+      size: 0,
+      cell: CommonCells.CommonContextBtnCell,
+    },
+  ] as ColumnDef<DSUser, unknown>[],
 
-    row: [
-      {
-        id: 'file-row',
-        accessorKey: 'displayName',
-        accessorFn: (item) => item,
-        cell: Rows.UserRow,
-      },
-    ] as ColumnDef<DSUser, DSUser>[],
+  row: [
+    {
+      id: UserRowIds.Default,
+      accessorFn: (item) => item,
+      cell: Rows.UserRow,
+    },
+  ] as ColumnDef<DSUser, DSUser>[],
 
-    tile: [
-      {
-        id: 'file-tile',
-        accessorKey: 'displayName',
-        accessorFn: (item) => item,
-        cell: Tiles.UserTile,
-      },
-    ] as ColumnDef<DSUser, DSUser>[],
-  },
-};
+  tile: [],
+} as const;

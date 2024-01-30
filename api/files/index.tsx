@@ -16,6 +16,7 @@ export const makeFiles = (...lens: number[]) => {
       (d): DSFile => ({
         id: d + 1,
         title: faker.system.fileName({ extensionCount: 0 }),
+        roomName: faker.lorem.word(),
         createdBy: makeUser(d + 1 + ''),
         contentLength:
           faker.number.float({ min: 0, max: 500, precision: 0.1 }) +
