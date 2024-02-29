@@ -1,11 +1,11 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useMemo, useCallback } from 'react';
 import { DSFileApiResponse, getFiles } from '@/api/files';
-import Table from '@/components/Table';
+import Content from '@/components/Table';
 
 const fetchSize = 100;
 
-const FilesTable = () => {
+const FilesContent = () => {
   const {
     data,
     fetchNextPage,
@@ -32,35 +32,27 @@ const FilesTable = () => {
   }, [fetchNextPage, isFetching, totalFetched, totalDBRowCount]);
 
   return (
-    <Table
-      id={'table_my_documents'}
-      dataTypeKey='file'
-      data={flatData}
-      defaultView='table'
-      onBottomReached={onBottomReached}
-      settings={{
-        availableViews: ['table', 'row', 'tile'],
-        defaultView: 'table',
-        columns: [
-          { id: 'file-column-title', isVisible: true, size: 50 },
-          { id: 'file-column-room', isVisible: true, size: 50 },
-          { id: 'file-column-author', isVisible: false, size: -15 },
-        ],
-        row: 'file-row-default',
-        tile: 'file-tile-default',
-      }}
-
-      // settingsFn={(defaultSettings) => ({
-      //   ...defaultSettings,
-      //   columns: [
-      //     ...defaultSettings.columns,
-      //     { id: 'file-column-room', isVisible: true, size: 15 },
-      //     { id: 'file-column-author', isVisible: false, size: -15 },
-      //   ],
-      //   tile: 'file-tile-default',
-      // })}
-    />
+    <>
+      <Content
+        id='content_my-documents'
+        dataTypeKey='file'
+        data={flatData}
+        onBottomReached={onBottomReached}
+        settings={{
+          availableViews: ['table', 'tile', 'row'],
+          defaultView: 'table',
+          columns: [
+            { id: 'file-column-title', size: 80 },
+            { id: 'file-column-room', isVisible: false, size: 35 },
+            { id: 'file-column-author', isVisible: false, size: 15 },
+            { id: 'file-column-dateUpdated', size: 20 },
+          ],
+          row: 'file-row-default',
+          tile: 'file-tile-default',
+        }}
+      />
+    </>
   );
 };
 
-export default FilesTable;
+export default FilesContent;

@@ -5,10 +5,9 @@ import {
   Updater,
 } from '@tanstack/react-table';
 
-import { AnyDataTypeKey } from '@/components/Table/types';
 import { useState } from 'react';
-import { TABLE_MIN_SIZE as minSize } from '@/components/Table/constants/columnData';
-import { getSavedTableSizing, saveTablesState } from './useContentSavedState';
+import { TABLE_MIN_SIZE_PCT as minSize } from '@/components/Table/constants';
+import { getSavedTableSizing, saveTableState } from './useContentSavedState';
 import {
   calculateColumnSizesSum,
   calculateMaxColumnSize,
@@ -23,7 +22,7 @@ import { ContentSettings } from '../types/contentSettings';
 
 export const useTableSizing = (
   tableId: string,
-  settings: ContentSettings<AnyDataTypeKey>
+  settings: ContentSettings
 ): [
   ColumnSizingState,
   typeof setSizing,
@@ -46,6 +45,9 @@ export const useTableSizing = (
 
   const [oldSizingInfo, setOldSizingInfo] =
     useState<ColumnSizingInfoState>(sizingInfo);
+
+  if (!settings.columns)
+    return [sizing, setSizing, () => {}, sizingInfo, () => {}];
 
   //
 
@@ -138,7 +140,7 @@ export const useTableSizing = (
 
     // Normalizes sizing if anything breaks (generally adds/removes 0.01-0.05)
     // (sometimes needed due to point addition and weird user cases, like moving cursor really fast)
-    // May be removed later after overall sizing mechanism improvements, but this works fine for now
+    // May be removed later after overall sizing mechanism improvements, but works fine for now
     const newEntries = filterOutHiddenColumns(Object.entries(newSizing));
     const sizesSum = calculateColumnSizesSum(newEntries);
     if (sizesSum !== 100) {
@@ -153,7 +155,7 @@ export const useTableSizing = (
     }
 
     setSizing(newSizing);
-    saveTablesState({ tableId, sizing: newSizing, settings });
+    saveTableState({ tableId, sizing: newSizing, settings });
   };
 
   //

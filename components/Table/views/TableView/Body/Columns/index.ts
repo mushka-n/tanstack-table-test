@@ -10,7 +10,7 @@ import FileTypeCell from './File/Type';
 
 // User
 import UserTypeCell from './User/Type';
-
+import UserGroupsCell from './User/Groups';
 //
 
 export const CommonCells = {
@@ -26,5 +26,6 @@ export const FileCells = {
 };
 
 export const UserCells = {
+  UserGroupsCell,
   UserTypeCell,
 };

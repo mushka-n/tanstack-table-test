@@ -11,16 +11,21 @@ import { AnyDataType } from '../Table/types';
 interface ContextMenuProps {
   item: AnyDataType;
   children: ReactNode;
+  style?: any;
 }
 
-const ContextMenu = ({ item, children }: ContextMenuProps) => {
+const ContextMenu = ({ item, children, style }: ContextMenuProps) => {
   const [bookmarksChecked, setBookmarksChecked] = useState<boolean>(true);
   const [urlsChecked, setUrlsChecked] = React.useState<boolean>(false);
   const [person, setPerson] = useState<string>('pedro');
 
   return (
     <ContextMenuPrimitive.Root>
-      <ContextMenuPrimitive.Trigger className='ContextMenuTrigger' asChild>
+      <ContextMenuPrimitive.Trigger
+        className='ContextMenuTrigger'
+        asChild
+        style={style}
+      >
         {children}
       </ContextMenuPrimitive.Trigger>
       <ContextMenuPrimitive.Portal>

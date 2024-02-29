@@ -1,12 +1,12 @@
 import { addF } from '@/utils/sumFloats';
-import { TABLE_MIN_SIZE } from '../constants/columnData';
+import { TABLE_MIN_SIZE_PCT } from '../constants';
 
 export const getTableWidthPx = (tableId: string) => {
   return document.getElementById(tableId)!.getBoundingClientRect().width;
 };
 
 export const clampColumnSize = (value: number, max: number) => {
-  return Math.max(TABLE_MIN_SIZE, Math.min(max, value));
+  return Math.max(TABLE_MIN_SIZE_PCT, Math.min(max, value));
 };
 
 export const findMinEntry = (entries: [string, number][]) => {
@@ -27,7 +27,7 @@ export const findMaxEntry = (entries: [string, number][]) => {
 
 export const calculateMaxColumnSize = (entries: [string, number][]) => {
   const visibleEntries = filterOutHiddenColumns(entries);
-  return 100 - (visibleEntries.length - 1) * TABLE_MIN_SIZE;
+  return 100 - (visibleEntries.length - 1) * TABLE_MIN_SIZE_PCT;
 };
 
 export const calculateColumnSizesSum = (entries: [string, number][]) => {
@@ -39,5 +39,5 @@ export const filterOutHiddenColumns = (entries: [string, number][]) => {
 };
 
 export const filterOutMinSizeColumns = (entries: [string, number][]) => {
-  return entries.filter(([, size]) => size > TABLE_MIN_SIZE);
+  return entries.filter(([, size]) => size > TABLE_MIN_SIZE_PCT);
 };

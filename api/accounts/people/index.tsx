@@ -7,7 +7,7 @@ export type DSUserApiResponse = {
   total: number;
 };
 
-export const makeUser = (id: string) => ({
+export const makeUser = (id: string): DSUser => ({
   id,
   displayName: faker.person.firstName() + ' ' + faker.person.lastName(),
   email: faker.internet.email(),
@@ -18,6 +18,7 @@ export const makeUser = (id: string) => ({
     'collaborator',
     'user',
   ])[0]!,
+  groups: [],
   avatarSmall: faker.internet.avatar(),
   hasAvatar: true,
   profileUrl: '',

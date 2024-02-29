@@ -14,6 +14,4 @@ export type AnyDataTypeKey = keyof TableDataTypeMap;
 
 export type AnyDataType = TableDataTypeMap[AnyDataTypeKey];
 
-// Generics
-
 export type DataTypeByKey<DTK extends AnyDataTypeKey> = TableDataTypeMap[DTK];

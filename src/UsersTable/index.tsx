@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react';
-import Table from '@/components/Table';
+import Content from '@/components/Table';
 import { DSUserApiResponse, getUsers } from '@/api/accounts/people';
 import { useInfiniteQuery } from '@tanstack/react-query';
 const fetchSize = 100;
 
-const UsersTable = () => {
+const UsersContent = () => {
   const {
     data,
     fetchNextPage,
@@ -31,14 +31,25 @@ const UsersTable = () => {
   }, [fetchNextPage, isFetching, totalFetched, totalDBRowCount]);
 
   return (
-    <Table
+    <Content
       id={'table_accounts_people'}
-      defaultView={'row'}
       dataTypeKey={'user'}
       data={flatData}
       onBottomReached={onBottomReached}
+      //
+      settings={{
+        availableViews: ['table', 'row'],
+        defaultView: 'table',
+        columns: [
+          { id: 'user-column-name', size: 100 / 4 },
+          { id: 'user-column-groups', size: 100 / 4 },
+          { id: 'user-column-type', size: 100 / 4 },
+          { id: 'user-column-email', size: 100 / 4 },
+        ],
+        row: 'user-row-default',
+      }}
     />
   );
 };
 
-export default UsersTable;
+export default UsersContent;

@@ -3,6 +3,7 @@ import { DSFile } from '@/types/DSItems/DSFile';
 import DocxIcon from '@/src/icons/docx.svg';
 import { useContentSelection } from '@/components/Table/hooks/useContentSelection';
 import { MouseEvent } from 'react';
+import SelectDemo from '@/components/Select';
 
 const FileTileCell = ({ getValue }: CellContext<DSFile, DSFile>) => {
   const item = getValue();

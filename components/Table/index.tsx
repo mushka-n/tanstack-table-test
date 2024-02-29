@@ -1,59 +1,72 @@
 import { useReactTable, getCoreRowModel } from '@tanstack/react-table';
 import { AnyDataTypeKey, DataTypeByKey } from './types';
-import { ContentView, ContentSettings } from './types/contentSettings';
+import {
+  ContentSettings,
+  ContentAvailableViews,
+} from './types/contentSettings';
 import { useTableVisibility } from './hooks/useTableVisibility';
-import { useEffect, useRef, useState, ChangeEvent } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTableSizing } from './hooks/useTableSizing';
 import RowView from './views/RowView';
 import { useContentWidth } from './hooks/useContentWidth';
 import TableView from './views/TableView';
 import TileView from './views/TileView';
 import { useContentDef } from './hooks/useContentDef';
-import { DefaultContentSettings } from './settings';
+import { defaultContentSettingsMap } from './settings';
+import { useContentView } from './hooks/useContentView';
+import useContentSettingsErrorCheck from './hooks/useContentSettingsErrorCheck';
 
-interface TableProps<DTK extends AnyDataTypeKey> {
+interface ContentProps<
+  DTK extends AnyDataTypeKey,
+  AV extends ContentAvailableViews,
+> {
   id: string;
-  defaultView?: ContentView;
   dataTypeKey: DTK;
   data: DataTypeByKey<DTK>[];
   dataTotalLength?: number;
   onBottomReached?: () => void;
-  settings?: ContentSettings<DTK>;
-  settingsFn?: (defaultSettings: ContentSettings<DTK>) => ContentSettings<DTK>;
+  settings?: ContentSettings<DTK, AV>;
 }
 
-const Table = <DTK extends AnyDataTypeKey>({
+const Content = <DTK extends AnyDataTypeKey, AV extends ContentAvailableViews>({
   id,
-  defaultView = 'table',
   dataTypeKey,
   data,
   dataTotalLength,
   onBottomReached,
-  settings: propsSettings = DefaultContentSettings[dataTypeKey],
-  settingsFn,
-}: TableProps<DTK>) => {
+  settings = defaultContentSettingsMap[
+    dataTypeKey
+  ] as unknown as ContentSettings<DTK, AV>,
+}: ContentProps<DTK, AV>) => {
   const containerRef = useRef<HTMLDivElement>(null);
+
   const contentWidth = useContentWidth(containerRef);
 
-  const settings = settingsFn
-    ? settingsFn(DefaultContentSettings[dataTypeKey])
-    : propsSettings;
+  const withTable =
+    settings.availableViews.includes('table') && 'columns' in settings;
 
-  const [viewInternal, setViewInternal] = useState<ContentView>(defaultView);
-  const onChangeViewInternal = (e: ChangeEvent<HTMLInputElement>) =>
-    setViewInternal(e.target.value as ContentView);
+  useContentSettingsErrorCheck(id, settings as unknown as ContentSettings);
+
+  const [view, onChangeView] = useContentView<AV>(
+    settings.defaultView,
+    contentWidth
+  );
+
+  const contentDef = useContentDef<DTK, AV>(dataTypeKey, view, settings);
 
   const [sizing, setSizing, onSizingChange, sizingInfo, onSizingInfoChange] =
-    useTableSizing(id, settings as unknown as ContentSettings<AnyDataTypeKey>);
+    useTableSizing(id, settings as unknown as ContentSettings);
 
   const [visibility, onVisibilityChange] = useTableVisibility(
     id,
-    settings as unknown as ContentSettings<AnyDataTypeKey>
+    settings as unknown as ContentSettings,
+    sizing,
+    setSizing
   );
 
   const table = useReactTable({
     data,
-    columns: useContentDef<DTK>(dataTypeKey, viewInternal, settings),
+    columns: contentDef,
     getCoreRowModel: getCoreRowModel(),
     state: {
       columnSizing: {},
@@ -61,10 +74,9 @@ const Table = <DTK extends AnyDataTypeKey>({
       columnVisibility: visibility,
     },
     columnResizeMode: 'onChange',
-    onColumnVisibilityChange: (visibilityUpdater) =>
-      onVisibilityChange(visibilityUpdater, sizing, setSizing),
-    onColumnSizingChange: onSizingChange,
-    onColumnSizingInfoChange: onSizingInfoChange,
+    onColumnVisibilityChange: withTable ? onVisibilityChange : undefined,
+    onColumnSizingChange: withTable ? onSizingChange : undefined,
+    onColumnSizingInfoChange: withTable ? onSizingInfoChange : undefined,
   });
 
   useEffect(() => {
@@ -88,41 +100,47 @@ const Table = <DTK extends AnyDataTypeKey>({
       >
         <fieldset style={{ marginBottom: '20px' }}>
           <legend>View</legend>
-          <div>
-            <input
-              id={`${id}_table-view`}
-              type='radio'
-              value={'table'}
-              checked={viewInternal === 'table'}
-              onChange={onChangeViewInternal}
-            />
-            <label htmlFor={`${id}_table-view`}>Table</label>
-          </div>
+          {settings.availableViews.includes('table') && (
+            <div>
+              <input
+                id={`${id}_table-view`}
+                type='radio'
+                value={'table'}
+                checked={view === 'table'}
+                onChange={onChangeView}
+              />
+              <label htmlFor={`${id}_table-view`}>Table</label>
+            </div>
+          )}
 
-          <div>
-            <input
-              id={`${id}_row-view`}
-              type='radio'
-              value={'row'}
-              checked={viewInternal === 'row'}
-              onChange={onChangeViewInternal}
-            />
-            <label htmlFor={`${id}_row-view`}>Row</label>
-          </div>
+          {settings.availableViews.includes('row') && (
+            <div>
+              <input
+                id={`${id}_row-view`}
+                type='radio'
+                value={'row'}
+                checked={view === 'row'}
+                onChange={onChangeView}
+              />
+              <label htmlFor={`${id}_row-view`}>Row</label>
+            </div>
+          )}
 
-          <div>
-            <input
-              id={`${id}_tile-view`}
-              type='radio'
-              value={'tile'}
-              checked={viewInternal === 'tile'}
-              onChange={onChangeViewInternal}
-            />
-            <label htmlFor={`${id}_tile-view`}>Tile</label>
-          </div>
+          {settings.availableViews.includes('tile') && (
+            <div>
+              <input
+                id={`${id}_tile-view`}
+                type='radio'
+                value={'tile'}
+                checked={view === 'tile'}
+                onChange={onChangeView}
+              />
+              <label htmlFor={`${id}_tile-view`}>Tile</label>
+            </div>
+          )}
         </fieldset>
 
-        {viewInternal === 'table' && (
+        {view === 'table' && (
           <fieldset>
             <legend>Visibility</legend>
 
@@ -163,7 +181,7 @@ const Table = <DTK extends AnyDataTypeKey>({
           cellPadding={0}
           cellSpacing={0}
         >
-          {viewInternal === 'table' && (
+          {view === 'table' && (
             <TableView
               dataTypeKey={dataTypeKey}
               containerRef={containerRef}
@@ -175,7 +193,7 @@ const Table = <DTK extends AnyDataTypeKey>({
             />
           )}
 
-          {viewInternal === 'row' && (
+          {view === 'row' && (
             <RowView
               dataTypeKey={dataTypeKey}
               containerRef={containerRef}
@@ -184,7 +202,7 @@ const Table = <DTK extends AnyDataTypeKey>({
             />
           )}
 
-          {viewInternal === 'tile' && (
+          {view === 'tile' && (
             <TileView
               dataTypeKey={dataTypeKey}
               containerRef={containerRef}
@@ -199,4 +217,4 @@ const Table = <DTK extends AnyDataTypeKey>({
   );
 };
 
-export default Table;
+export default Content;

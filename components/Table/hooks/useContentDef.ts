@@ -1,45 +1,44 @@
-import { ColumnDef } from '@tanstack/react-table';
-import { AnyDataTypeKey, DataTypeByKey } from '@/components/Table/types';
-import { ContentViews } from '../settings';
-import { ColumnIdsByKey, ContentSettings } from '../types/contentSettings';
+import { AnyDataTypeKey } from '@/components/Table/types';
+import { contentDefsMap } from '../settings';
+import {
+  ContentAvailableViews,
+  ContentDefIds,
+  ContentDefs,
+  ContentSettings,
+} from '../types/contentSettings';
+import { useMemo } from 'react';
 
-type ContentDef<DTK extends AnyDataTypeKey> = ColumnDef<
-  DataTypeByKey<DTK>,
-  unknown
->[];
-
-export const useContentDef = <DTK extends AnyDataTypeKey>(
+export const useContentDef = <
+  DTK extends AnyDataTypeKey,
+  AV extends ContentAvailableViews,
+>(
   dataTypeKey: DTK,
-  view: 'table' | 'row' | 'tile',
-  settings: ContentSettings<DTK>
-): ContentDef<DTK> => {
-  const contentViews = ContentViews[dataTypeKey as keyof typeof ContentViews];
+  view: AV[number],
+  settings: ContentSettings<DTK, AV>
+) => {
+  return useMemo(() => {
+    const contentDefs = contentDefsMap[dataTypeKey] as ContentDefs<DTK, AV>;
 
-  if (view === 'table' && !!settings.columns) {
-    const tableDef = contentViews.table as ContentDef<DTK>;
-    const activeIds = settings.columns.map(({ id }) => id);
-    return tableDef.filter(({ id }) =>
-      activeIds.includes(id as ColumnIdsByKey<DTK>)
+    if (view === 'table' && 'table' in contentDefs && 'columns' in settings) {
+      const activeIds = settings.columns.map(({ id }) => id);
+      return contentDefs.table.filter(
+        ({ id, meta }) =>
+          activeIds.includes(id as ContentDefIds<DTK, 'table'>) ||
+          meta?.isInherent
+      );
+    }
+
+    if (view === 'row' && 'row' in contentDefs && 'row' in settings) {
+      return contentDefs.row.filter(({ id }) => id === settings.row);
+    }
+
+    if (view === 'tile' && 'tile' in contentDefs && 'tile' in settings) {
+      return contentDefs.tile.filter(({ id }) => id === settings.tile);
+    }
+
+    console.error(
+      `ContentDef was not found.\n${dataTypeKey}ContentSettings doesn't have ${view} view.`
     );
-  }
-
-  if (view === 'row' && !!settings.row) {
-    const rowDef = contentViews.row as ContentDef<DTK>;
-    const activeRowId = settings.row;
-    const activeRow = rowDef.filter(({ id }) => id === activeRowId);
-    return activeRow;
-  }
-
-  if (view === 'tile' && !!settings.tile) {
-    const tileDef = contentViews.tile as ContentDef<DTK>;
-    const activeTileId = settings.tile;
-    const activeTile = tileDef.filter(({ id }) => id === activeTileId);
-    return activeTile;
-  }
-
-  console.error(
-    `ContentDef was not found.\n${dataTypeKey}ContentSettings doesn't have ${view} view.`
-  );
-
-  return [];
+    return [];
+  }, [dataTypeKey, settings, view]);
 };

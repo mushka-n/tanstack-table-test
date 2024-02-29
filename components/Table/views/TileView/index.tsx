@@ -5,6 +5,7 @@ import { RefObject, useEffect, useState } from 'react';
 import ContextMenu from '@/components/ContextMenu';
 import { useContentSelection } from '../../hooks/useContentSelection';
 import { useTileVirtualization } from '../../hooks/useTileVirtualization';
+import { TILE_THRESHOLDS } from '../../constants';
 
 interface TileViewProps<DTK extends AnyDataTypeKey> {
   dataTypeKey: DTK;
@@ -14,16 +15,8 @@ interface TileViewProps<DTK extends AnyDataTypeKey> {
   dataTotalLength?: number;
 }
 
-const tileThresholds = {
-  '1': 600,
-  '2': 900,
-  '3': 1200,
-  '4': 1500,
-  '5': 1800,
-};
-
 const getColesNum = (contentWidth: number) => {
-  const thresholds = Object.entries(tileThresholds);
+  const thresholds = Object.entries(TILE_THRESHOLDS);
 
   for (let i = 0; i < thresholds.length; i++) {
     const [colsNum, threshold] = thresholds[i];
@@ -32,8 +25,6 @@ const getColesNum = (contentWidth: number) => {
 
   return thresholds.length;
 };
-
-// const colsNum = 6;
 
 const TileView = <DTK extends AnyDataTypeKey>({
   dataTypeKey,
@@ -47,7 +38,7 @@ const TileView = <DTK extends AnyDataTypeKey>({
   const { selection, setSelection } = useContentSelection(dataTypeKey);
   const canSelect = !!selection && !!setSelection;
 
-  const { vRows, totalSize, measure } = useTileVirtualization(
+  const { vRows, totalSize, measure, scrollToIndex } = useTileVirtualization(
     containerRef,
     rows as Row<unknown>[],
     colsNum
@@ -56,6 +47,16 @@ const TileView = <DTK extends AnyDataTypeKey>({
   const onSelectItem = (item: DataTypeByKey<DTK>) => {
     if (!canSelect) return;
     setSelection([item]);
+  };
+
+  const highlightElement = (index: number) => {
+    const element = document.getElementById(`${index}`);
+    if (!element) return;
+    console.log(element);
+    element.animate(
+      [{ backgroundColor: 'yellow' }, { backgroundColor: 'white' }],
+      { duration: 10000000 }
+    );
   };
 
   useEffect(() => {
@@ -67,6 +68,14 @@ const TileView = <DTK extends AnyDataTypeKey>({
 
   return (
     <>
+      <button
+        onClick={() => {
+          scrollToIndex(120, { align: 'center', behavior: 'smooth' });
+          highlightElement(120);
+        }}
+      >
+        Scroll
+      </button>
       <tbody
         onContextMenu={(e) => e.preventDefault()}
         style={{
@@ -75,25 +84,6 @@ const TileView = <DTK extends AnyDataTypeKey>({
           position: 'relative',
         }}
       >
-        <tr style={{ position: 'absolute', top: 0, left: 0 }}>
-          <button
-            onClick={() => {
-              setColsNum(colsNum + 1);
-              measure();
-            }}
-          >
-            +
-          </button>
-          <button
-            onClick={() => {
-              setColsNum(colsNum - 1);
-              measure();
-            }}
-          >
-            -
-          </button>
-        </tr>
-
         <tr
           style={{
             height: `100%`,
@@ -114,7 +104,8 @@ const TileView = <DTK extends AnyDataTypeKey>({
               <ContextMenu item={item} key={row.id}>
                 <td
                   className={styles.row}
-                  key={vRow.index}
+                  id={vRow.index.toString()}
+                  key={row.id}
                   title={vRow.index.toString()}
                   onClick={() => onSelectItem(item)}
                   style={{

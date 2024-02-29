@@ -22,10 +22,8 @@ const TableBody = <DTK extends AnyDataTypeKey>({
   const { selection, setSelection } = useContentSelection(dataTypeKey);
   const canSelect = !!selection && !!setSelection;
 
-  const { vRows, offsetTop, offsetBottom } = useTableVirtualization(
-    rows as Row<unknown>[],
-    containerRef
-  );
+  const { vRows, offsetTop, offsetBottom, scrollToIndex } =
+    useTableVirtualization(rows as Row<unknown>[], containerRef);
 
   const onSelectItem = (item: DataTypeByKey<DTK>) => {
     if (!canSelect) return;
@@ -47,28 +45,11 @@ const TableBody = <DTK extends AnyDataTypeKey>({
         const row = rows[vRow.index];
         const item = row.original;
         const isSelected = canSelect && selection.includes(item);
-        const isLoaderRow = vRow.index > rows.length - 1;
-
-        if (isLoaderRow)
-          return (
-            <tr
-              className={styles.row}
-              style={{
-                boxSizing: 'border-box',
-                height: `48px`,
-                width: '100%',
-                borderBottom: '1px solid #dedede',
-              }}
-            >
-              <td colSpan={99} style={{ textAlign: 'center' }}>
-                LOADING NEXT PAGE
-              </td>
-            </tr>
-          );
 
         return (
           <ContextMenu item={item} key={row.id}>
             <tr
+              id={`${vRow.index}`}
               className={styles.row}
               style={{
                 boxSizing: 'border-box',
@@ -88,23 +69,6 @@ const TableBody = <DTK extends AnyDataTypeKey>({
           </ContextMenu>
         );
       })}
-
-      {/* {!!dataTotalLength && rows.length < dataTotalLength && (
-        <tr>
-          <td
-            colSpan={99}
-            style={{
-              minWidth: 'auto',
-              height: `48px`,
-              width: '100%',
-              background: 'grey',
-              textAlign: 'center',
-            }}
-          >
-            <div>LOADING NEXT PAGE</div>
-          </td>
-        </tr>
-      )} */}
 
       <tr>
         <td

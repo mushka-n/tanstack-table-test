@@ -1,68 +1,65 @@
-import { ColumnDef } from '@tanstack/react-table';
-import { DSUser } from '@/types/DSUsers/DSUser';
-import { ContentViews, ContentSettings } from '../types/contentSettings';
+import { ContentDefs, ContentSettings } from '../types/contentSettings';
 
 import { CommonCells, UserCells } from '../views/TableView/Body/Columns';
 import Rows from '../views/RowView/Rows';
-import { ContentDefIds } from '../constants/contentDefIds';
 
 //
 
-const UserColumnIds = ContentDefIds.user.columns;
-const UserRowIds = ContentDefIds.user.rows;
-
-//
-
-export const UserDefaultContentSettings: ContentSettings<'user'> = {
+export const userDefaultContentSettings = {
   availableViews: ['table', 'row'],
   defaultView: 'table',
 
   columns: [
-    { id: UserColumnIds.Name, isVisible: true, size: 100 / 3 },
-    { id: UserColumnIds.Type, isVisible: true, size: 100 / 3 },
-    { id: UserColumnIds.Email, isVisible: true, size: 100 / 3 },
+    { id: 'user-column-name', isVisible: true, size: 100 / 3 },
+    { id: 'user-column-type', isVisible: true, size: 100 / 3 },
+    { id: 'user-column-email', isVisible: true, size: 100 / 3 },
   ],
-  row: UserRowIds.Default,
-} as const;
+  row: 'user-row-default',
+} as const satisfies ContentSettings<'user', ['table', 'row']>;
 
 //
 
-export const UserContentViews: ContentViews<DSUser> = {
+export const userContentDefs = {
   table: [
     {
-      id: UserColumnIds.Name,
+      id: 'user-column-name',
       accessorKey: 'displayName',
       header: 'Name',
+      meta: { isInherent: true, isCheckbox: true },
       cell: CommonCells.CommonStringCell,
     },
     {
-      id: UserColumnIds.Type,
+      id: 'user-column-type',
       accessorKey: 'role',
       header: 'Author',
       cell: UserCells.UserTypeCell,
     },
     {
-      id: UserColumnIds.Email,
+      id: 'user-column-groups',
+      accessorKey: 'groups',
+      header: 'Groups',
+      cell: UserCells.UserGroupsCell,
+    },
+    {
+      id: 'user-column-email',
       accessorKey: 'email',
       header: 'Email',
       cell: CommonCells.CommonStringCell,
     },
     {
-      id: UserColumnIds.ContextBtn,
+      id: 'user-column-contextBtn',
       header: 'o',
       enableHiding: false,
-      size: 0,
+      meta: { isInherent: true, fixedWidthPx: 40 },
       cell: CommonCells.CommonContextBtnCell,
     },
-  ] as ColumnDef<DSUser, unknown>[],
+  ],
 
   row: [
     {
-      id: UserRowIds.Default,
+      id: 'user-row-default',
       accessorFn: (item) => item,
       cell: Rows.UserRow,
     },
-  ] as ColumnDef<DSUser, DSUser>[],
-
-  tile: [],
-} as const;
+  ],
+} as const satisfies ContentDefs<'user', ['table', 'row']>;

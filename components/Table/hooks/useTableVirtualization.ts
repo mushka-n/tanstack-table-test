@@ -3,7 +3,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { RefObject } from 'react';
 
 const ROW_HEIGHT = 48;
-const OVERSCAN = 5;
+const OVERSCAN = 2;
 
 export const useTableVirtualization = (
   rows: Row<unknown>[],
@@ -20,6 +20,8 @@ export const useTableVirtualization = (
 
   const totalSize = virtualizer.getTotalSize();
 
+  const scrollToIndex = virtualizer.scrollToIndex;
+
   let offsetTop = 0;
   let offsetBottom = 0;
   if (vRows.length) {
@@ -27,5 +29,5 @@ export const useTableVirtualization = (
     offsetBottom = Math.max(0, totalSize - vRows[vRows.length - 1].end);
   }
 
-  return { vRows, totalSize, offsetTop, offsetBottom };
+  return { vRows, totalSize, offsetTop, offsetBottom, scrollToIndex };
 };

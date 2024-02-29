@@ -4,36 +4,35 @@ import {
   VisibilityState,
 } from '@tanstack/react-table';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { TABLE_MIN_SIZE as minSize } from '@/components/Table/constants/columnData';
-import { AnyDataTypeKey } from '@/components/Table/types';
+import { TABLE_MIN_SIZE_PCT as minSize } from '@/components/Table/constants';
 import { addF } from '@/utils/sumFloats';
 import {
   getSavedTableVisibility,
-  saveTablesState,
+  saveTableState,
 } from './useContentSavedState';
 import { ContentSettings } from '../types/contentSettings';
 
 export const useTableVisibility = (
   tableId: string,
-  settings: ContentSettings<AnyDataTypeKey>
+  settings: ContentSettings,
+  sizing: ColumnSizingState,
+  setSizing: Dispatch<SetStateAction<ColumnSizingState>>
 ): [VisibilityState, typeof onVisibilityChange] => {
   const [visibility, setVisibility] = useState(
     getSavedTableVisibility(tableId, settings)
   );
 
-  const onVisibilityChange = (
-    visibilityUpdater: Updater<VisibilityState>,
-    sizing: ColumnSizingState,
-    setSizing: Dispatch<SetStateAction<ColumnSizingState>>
-  ) => {
+  if (!settings.columns) return [visibility, () => {}];
+
+  const onVisibilityChange = (visibilityUpdater: Updater<VisibilityState>) => {
     if (typeof visibilityUpdater !== 'function') return;
+    console.log('visibilityUpdater', visibilityUpdater);
 
     const [columnKey] = Object.keys(visibilityUpdater({}));
     const [columnVisibility] = Object.values(visibilityUpdater({}));
     const newVisibility = { ...visibility, [columnKey]: columnVisibility };
 
     // We only use visible columns (with size > 0) in calculations
-    console.log(sizing);
     let entries = Object.entries(sizing);
     entries = entries.filter(([key, size]) => key === columnKey || size > 0);
     const columnIndex = entries.findIndex(([key]) => key === columnKey);
@@ -83,7 +82,7 @@ export const useTableVisibility = (
     setVisibility(newVisibility);
     setSizing(newSizing);
 
-    saveTablesState({
+    saveTableState({
       tableId,
       sizing: newSizing,
       visibility: newVisibility,

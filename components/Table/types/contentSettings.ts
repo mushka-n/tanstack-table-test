@@ -1,95 +1,56 @@
-import { ContentDefIds } from './../constants/contentDefIds';
 import { ColumnDef } from '@tanstack/react-table';
-import { AnyDataTypeKey, DataTypeByKey, AnyDataType } from '.';
-import { ContentViews } from '../settings';
-
-// Default Settings
+import { AnyDataTypeKey, DataTypeByKey } from '.';
+import { contentDefsMap } from '../settings';
 
 export type ContentView = 'table' | 'row' | 'tile';
+export type ContentAvailableViews = [ContentView, ...ContentView[]];
 
-export type DefaultContentSettingsMap = {
-  [DTK in AnyDataTypeKey]: ContentSettings<DTK>;
-};
+//
 
-export type ContentSettings<DTK extends AnyDataTypeKey> = {
-  availableViews: ('table' | 'row' | 'tile')[];
-  defaultView: 'table' | 'row' | 'tile';
-  columns?: ColumnSettingsByKey<DTK>[];
-  row?: RowIdsByKey<DTK>;
-  tile?: TileIdsByKey<DTK>;
-};
-// | {
-//     availableViews: ['table'];
-//     defaultView: 'table';
-//     columns: ColumnSettingsByKey<DTK>[];
-//     row: RowIdsByKey<DTK>;
-//   }
-// | {
-//     availableViews: ['row'];
-//     defaultView: 'row';
-//     row: RowIdsByKey<DTK>;
-//   }
-// | {
-//     availableViews: ['tile'];
-//     defaultView: 'tile';
-//     tile: TileIdsByKey<DTK>;
-//   }
-// | {
-//     availableViews: ['table', 'row'];
-//     defaultView: 'table' | 'row';
-//     columns: ColumnSettingsByKey<DTK>[];
-//     row: RowIdsByKey<DTK>;
-//   }
-// | {
-//     availableViews: ['row', 'tile'];
-//     defaultView: 'row' | 'tile';
-//     row: RowIdsByKey<DTK>;
-//     tile: TileIdsByKey<DTK>;
-//   }
-// | {
-//     availableViews: ['table', 'tile'];
-//     defaultView: 'table' | 'tile';
-//     columns: ColumnSettingsByKey<DTK>[];
-//     tile: TileIdsByKey<DTK>;
-//   }
-// | {
-//     availableViews: ['table', 'row', 'tile'];
-//     defaultView: 'table' | 'row' | 'tile';
-//     columns: ColumnSettingsByKey<DTK>[];
-//     row: RowIdsByKey<DTK>;
-//     tile: TileIdsByKey<DTK>;
-//   };
+type ExtractContentDefIds<CV> = CV extends { id: infer I }[] ? I : never;
+export type ContentDefIds<
+  DTK extends AnyDataTypeKey = AnyDataTypeKey,
+  V extends ContentView = ContentView,
+> = V extends keyof (typeof contentDefsMap)[DTK]
+  ? ExtractContentDefIds<(typeof contentDefsMap)[DTK][V]>
+  : never;
 
-export type ColumnSettingsByKey<DTK extends AnyDataTypeKey> = {
-  id: ColumnIdsByKey<DTK>;
-  isVisible?: boolean;
-  size?: number;
-};
+//
 
-export type ColumnIdsByKey<DTK extends AnyDataTypeKey> = ValuesOf<
-  (typeof ContentDefIds)[DTK]['columns']
->;
+export type ContentSettings<
+  DTK extends AnyDataTypeKey = AnyDataTypeKey,
+  AV extends ContentAvailableViews = ContentAvailableViews,
+> = {
+  availableViews: AV;
+  defaultView: AV[number];
+} & ('table' extends AV[number]
+  ? {
+      columns: {
+        id: ContentDefIds<DTK, 'table'>;
+        isVisible?: boolean;
+        size: number;
+      }[];
+    }
+  : object) &
+  ('row' extends AV[number] ? { row: ContentDefIds<DTK, 'row'> } : object) &
+  ('tile' extends AV[number] ? { tile: ContentDefIds<DTK, 'tile'> } : object);
 
-export type RowIdsByKey<DTK extends AnyDataTypeKey> = ValuesOf<
-  (typeof ContentDefIds)[DTK]['rows']
->;
+//
 
-export type TileIdsByKey<DTK extends AnyDataTypeKey> = ValuesOf<
-  (typeof ContentDefIds)[DTK]['tiles']
->;
+export type ContentDef<DT, C> = {
+  id: string;
+} & ColumnDef<DT, C>;
 
-// Content Views
-
-export type ContentViewsMap = {
-  [DTK in AnyDataTypeKey]: ContentViews<DataTypeByKey<DTK>>;
-};
-
-export type ContentViews<DT extends AnyDataType> = {
-  table: ColumnDef<DT, unknown>[];
-  row: ColumnDef<DT, DT>[];
-  tile: ColumnDef<DT, DT>[];
-};
-
-// Generics
-
-type ValuesOf<T> = T[keyof T];
+export type ContentDefs<
+  DTK extends AnyDataTypeKey = AnyDataTypeKey,
+  AV extends ContentAvailableViews = ContentAvailableViews,
+> = ('table' extends AV[number]
+  ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    { table: ContentDef<DataTypeByKey<DTK>, any>[] }
+  : object) &
+  ('row' extends AV[number]
+    ? { row: ContentDef<DataTypeByKey<DTK>, DataTypeByKey<DTK>>[] }
+    : object) &
+  ('tile' extends AV[number]
+    ? { tile: ContentDef<DataTypeByKey<DTK>, DataTypeByKey<DTK>>[] }
+    : object);

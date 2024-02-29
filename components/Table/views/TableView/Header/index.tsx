@@ -1,8 +1,8 @@
-import { ColumnSizingState, Header, flexRender } from '@tanstack/react-table';
-import {
-  CONTEXT_BTN_SIZE_PX,
-  TABLE_MIN_SIZE,
-} from '@/components/Table/constants/columnData';
+import { ColumnSizingState, Header } from '@tanstack/react-table';
+import { TABLE_MIN_SIZE_PCT } from '@/components/Table/constants';
+import styles from './header.module.css';
+import ColumnHeader from './ColumnHeader';
+import { useMemo } from 'react';
 
 interface TableHeaderProps {
   contentWidth: number;
@@ -11,88 +11,39 @@ interface TableHeaderProps {
 }
 
 const TableHeader = ({ headers, sizing, contentWidth }: TableHeaderProps) => {
-  return (
-    <thead
-      style={{
-        position: 'sticky',
-        zIndex: 100,
-        top: 0,
-        background: '#efefef',
-      }}
-    >
-      <tr>
-        {headers.map((header, headerIndex) => (
-          <th
-            key={header.id}
-            colSpan={1}
-            style={
-              header.id !== 'contextBtn'
-                ? {
-                    position: 'relative',
-                    height: '40px',
-                    padding: 0,
-                    width: `${
-                      (sizing[header.id] *
-                        (contentWidth - CONTEXT_BTN_SIZE_PX)) /
-                      100
-                    }px`,
-                  }
-                : {
-                    height: '40px',
-                    width: `${CONTEXT_BTN_SIZE_PX}px`,
-                  }
-            }
-          >
-            <div
-              style={
-                header.id !== 'contextBtn'
-                  ? {
-                      width: `${
-                        (contentWidth - CONTEXT_BTN_SIZE_PX) / TABLE_MIN_SIZE
-                      }px`,
-                    }
-                  : {
-                      display: 'flex',
-                      justifyContent: 'flex-end',
-                      width: `${CONTEXT_BTN_SIZE_PX}px`,
-                    }
-              }
-            >
-              {flexRender(header.column.columnDef.header, header.getContext())}
-            </div>
+  const totalFlexWidth = useMemo(() => {
+    const totalFixedWidth = headers
+      .filter((h) => !!h.column.columnDef.meta?.fixedWidthPx)
+      .reduce((acc, h) => acc + h.column.columnDef.meta!.fixedWidthPx!, 0);
+    return contentWidth - totalFixedWidth;
+  }, [contentWidth, headers]);
 
-            {headerIndex < headers.length - 2 && (
-              <div
-                onMouseDown={header.getResizeHandler()}
-                onTouchStart={header.getResizeHandler()}
-                style={{
-                  position: 'absolute',
-                  right: '0',
-                  top: '0',
-                  height: '100%',
-                  boxSizing: 'border-box',
-                  margin: '0 -8px 0 0',
-                  width: '17px',
-                  padding: '0 8px',
-                  cursor: 'col-resize',
-                  userSelect: 'none',
-                  touchAction: 'none',
-                }}
-              >
-                <div
-                  style={{
-                    height: '100%',
-                    width: '1px',
-                    maxWidth: '1px',
-                    background: 'rgba(0, 0, 0, 0.5)',
-                    userSelect: 'none',
-                    touchAction: 'none',
-                  }}
-                />
-              </div>
-            )}
-          </th>
-        ))}
+  return (
+    <thead className={styles.tableHeader}>
+      <tr>
+        {headers.map((header, index) => {
+          const columnWidth =
+            header.column.columnDef.meta?.fixedWidthPx ||
+            (sizing[header.id] * totalFlexWidth) / 100;
+
+          const columnMinWidth =
+            header.column.columnDef.meta?.fixedWidthPx ||
+            totalFlexWidth / TABLE_MIN_SIZE_PCT;
+
+          const isLast = index === headers.length - 1;
+          const isResizable =
+            !isLast && !headers[index + 1].column.columnDef.meta?.fixedWidthPx;
+
+          return (
+            <ColumnHeader
+              key={header.id}
+              header={header}
+              width={columnWidth}
+              minWidth={columnMinWidth}
+              isResizable={isResizable}
+            />
+          );
+        })}
       </tr>
     </thead>
   );

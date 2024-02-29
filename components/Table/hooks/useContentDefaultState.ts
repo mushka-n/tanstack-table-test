@@ -1,16 +1,7 @@
-import { AnyDataTypeKey } from '../types';
 import { ContentSettings } from '../types/contentSettings';
 
-export const getDefaultVisibility = (
-  settings: ContentSettings<AnyDataTypeKey>
-) => {
-  if (!settings.columns) {
-    console.error(
-      'Default visibility could not be computed.',
-      'Content Settings doesn`t have "columns" property.'
-    );
-    return {};
-  }
+export const getDefaultVisibility = (settings: ContentSettings) => {
+  if (!settings.columns) return {};
 
   const result: { [key: string]: boolean } = {};
   settings.columns.forEach(
@@ -19,16 +10,13 @@ export const getDefaultVisibility = (
   return result;
 };
 
-export const getDefaultSizing = (settings: ContentSettings<AnyDataTypeKey>) => {
-  if (!settings.columns) {
-    console.error(
-      'Default sizing could not be computed.',
-      'ContentSettings doesn`t have "columns" property.'
-    );
-    return {};
-  }
+export const getDefaultSizing = (settings: ContentSettings) => {
+  if (!settings.columns) return {};
 
   const result: { [key: string]: number } = {};
-  settings.columns.forEach(({ id, size }) => (result[`${id}`] = size || 10));
+  settings.columns.forEach(
+    ({ id, isVisible, size }) =>
+      (result[`${id}`] = size * (isVisible !== false ? 1 : -1))
+  );
   return result;
 };

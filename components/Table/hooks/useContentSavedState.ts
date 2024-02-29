@@ -1,5 +1,4 @@
 import { ColumnSizingState, VisibilityState } from '@tanstack/react-table';
-import { AnyDataTypeKey } from '../types';
 import { throttle } from 'lodash';
 import {
   getDefaultSizing,
@@ -9,27 +8,37 @@ import { ContentSettings } from '../types/contentSettings';
 
 export const getSavedTableSizing = (
   tableId: string,
-  settings: ContentSettings<AnyDataTypeKey>
+  settings: ContentSettings
 ): ColumnSizingState => {
-  const tablesDataLS = localStorage.getItem('tables_state');
+  const tablesDataLS = localStorage.getItem('content-state');
   const tablesData = tablesDataLS && JSON.parse(tablesDataLS);
 
-  if (!tablesData?.[tableId]) return getDefaultSizing(settings);
+  if (!tablesData?.[tableId]) {
+    const defaultSizing = getDefaultSizing(settings);
+    saveTableState({ tableId, sizing: defaultSizing, settings });
+    return defaultSizing;
+  }
+
   return tablesData[tableId].sizing;
 };
 
 export const getSavedTableVisibility = (
   tableId: string,
-  settings: ContentSettings<AnyDataTypeKey>
+  settings: ContentSettings
 ): VisibilityState => {
-  const tablesDataLS = localStorage.getItem('tables_state');
+  const tablesDataLS = localStorage.getItem('content-state');
   const tablesData = tablesDataLS && JSON.parse(tablesDataLS);
 
-  if (!tablesData?.[tableId]) return getDefaultVisibility(settings);
+  if (!tablesData?.[tableId]) {
+    const defaultVisibility = getDefaultVisibility(settings);
+    saveTableState({ tableId, visibility: defaultVisibility, settings });
+    return defaultVisibility;
+  }
+
   return tablesData[tableId].visibility;
 };
 
-export const saveTablesState = ({
+export const saveTableState = ({
   tableId,
   sizing,
   visibility,
@@ -38,10 +47,10 @@ export const saveTablesState = ({
   tableId: string;
   sizing?: ColumnSizingState;
   visibility?: VisibilityState;
-  settings: ContentSettings<AnyDataTypeKey>;
+  settings: ContentSettings;
 }) => {
   throttle(() => {
-    const tablesStateLS = localStorage.getItem('tables_state');
+    const tablesStateLS = localStorage.getItem('content-state');
     let tablesState = tablesStateLS && JSON.parse(tablesStateLS);
 
     if (!tablesState?.[tableId]) {
@@ -56,6 +65,6 @@ export const saveTablesState = ({
     if (sizing) tablesState[tableId].sizing = sizing;
     if (visibility) tablesState[tableId].visibility = visibility;
 
-    localStorage.setItem('tables_state', JSON.stringify(tablesState));
+    localStorage.setItem('content-state', JSON.stringify(tablesState));
   }, 1000)();
 };
