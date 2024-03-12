@@ -40,7 +40,7 @@ const Content = <DTK extends AnyDataTypeKey, AV extends ContentAvailableViews>({
 }: ContentProps<DTK, AV>) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const contentWidth = useContentWidth(containerRef);
+  const [contentWidth] = useContentWidth(containerRef);
 
   const withTable =
     settings.availableViews.includes('table') && 'columns' in settings;
@@ -154,7 +154,7 @@ const Content = <DTK extends AnyDataTypeKey, AV extends ContentAvailableViews>({
                         checked={column.getIsVisible()}
                         onChange={column.getToggleVisibilityHandler()}
                       />
-                      {column.id.split('-').at(-1)}
+                      {column.columnDef.header?.toString()}
                     </label>
                   </div>
                 )

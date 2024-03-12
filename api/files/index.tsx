@@ -24,6 +24,7 @@ export const makeFiles = (...lens: number[]) => {
           faker.helpers.shuffle<string>(['KB', 'MB'])[0]!,
         created: faker.date.anytime(),
         updated: faker.date.anytime(),
+        erasure: faker.date.anytime(),
         fileType: faker.number.int({ min: 5, max: 7 }),
       })
     );

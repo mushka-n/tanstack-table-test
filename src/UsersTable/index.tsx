@@ -41,10 +41,10 @@ const UsersContent = () => {
         availableViews: ['table', 'row'],
         defaultView: 'table',
         columns: [
-          { id: 'user-column-name', size: 100 / 4 },
-          { id: 'user-column-groups', size: 100 / 4 },
-          { id: 'user-column-type', size: 100 / 4 },
-          { id: 'user-column-email', size: 100 / 4 },
+          { id: 'user-name', size: 25 },
+          { id: 'user-column-email', size: 25 },
+          { id: 'user-groups', size: 25 },
+          { id: 'user-type', size: 25 },
         ],
         row: 'user-row-default',
       }}

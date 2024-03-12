@@ -5,7 +5,7 @@ import Content from '@/components/Table';
 
 const fetchSize = 100;
 
-const FilesContent = () => {
+const TrashFilesContent = () => {
   const {
     data,
     fetchNextPage,
@@ -34,7 +34,7 @@ const FilesContent = () => {
   return (
     <>
       <Content
-        id='content_my-documents'
+        id='content_trash'
         dataTypeKey='file'
         data={flatData}
         onBottomReached={onBottomReached}
@@ -43,11 +43,12 @@ const FilesContent = () => {
           defaultView: 'table',
           columns: [
             { id: 'file-title', size: 40 },
-            { id: 'file-author', isVisible: false, size: 15 },
-            { id: 'file-dateCreated', size: 15 },
-            { id: 'file-dateUpdated', size: 15 },
-            { id: 'file-size', size: 15 },
-            { id: 'file-type', size: 15 },
+            { id: 'file-room', size: 20 },
+            { id: 'file-author', size: 20 },
+            { id: 'file-dateCreated', size: 15, isVisible: false },
+            { id: 'file-dateErasure', size: 20 },
+            { id: 'file-size', size: 15, isVisible: false },
+            { id: 'file-type', size: 15, isVisible: false },
           ],
           row: 'file-row-default',
           tile: 'file-tile-default',
@@ -57,4 +58,4 @@ const FilesContent = () => {
   );
 };
 
-export default FilesContent;
+export default TrashFilesContent;

@@ -1,6 +1,6 @@
 import { Row, flexRender } from '@tanstack/react-table';
 import { AnyDataTypeKey, DataTypeByKey } from '@/components/Table/types';
-import styles from '../TableView/Body/body.module.css';
+import styles from './tile.module.css';
 import { RefObject, useEffect, useState } from 'react';
 import ContextMenu from '@/components/ContextMenu';
 import { useContentSelection } from '../../hooks/useContentSelection';

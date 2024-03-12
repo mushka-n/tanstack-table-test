@@ -10,8 +10,8 @@ export const userDefaultContentSettings = {
   defaultView: 'table',
 
   columns: [
-    { id: 'user-column-name', isVisible: true, size: 100 / 3 },
-    { id: 'user-column-type', isVisible: true, size: 100 / 3 },
+    { id: 'user-name', isVisible: true, size: 100 / 3 },
+    { id: 'user-type', isVisible: true, size: 100 / 3 },
     { id: 'user-column-email', isVisible: true, size: 100 / 3 },
   ],
   row: 'user-row-default',
@@ -22,20 +22,20 @@ export const userDefaultContentSettings = {
 export const userContentDefs = {
   table: [
     {
-      id: 'user-column-name',
+      id: 'user-name',
       accessorKey: 'displayName',
       header: 'Name',
-      meta: { isInherent: true, isCheckbox: true },
+      meta: { isCheckbox: true },
       cell: CommonCells.CommonStringCell,
     },
     {
-      id: 'user-column-type',
+      id: 'user-type',
       accessorKey: 'role',
-      header: 'Author',
+      header: 'Type',
       cell: UserCells.UserTypeCell,
     },
     {
-      id: 'user-column-groups',
+      id: 'user-groups',
       accessorKey: 'groups',
       header: 'Groups',
       cell: UserCells.UserGroupsCell,
@@ -47,10 +47,10 @@ export const userContentDefs = {
       cell: CommonCells.CommonStringCell,
     },
     {
-      id: 'user-column-contextBtn',
+      id: 'user-contextBtn',
       header: 'o',
       enableHiding: false,
-      meta: { isInherent: true, fixedWidthPx: 40 },
+      meta: { isContextBtn: true, isInherent: true, fixedWidthPx: 40 },
       cell: CommonCells.CommonContextBtnCell,
     },
   ],

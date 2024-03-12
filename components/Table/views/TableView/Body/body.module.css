@@ -1,6 +1,10 @@
 .row {
   cursor: pointer;
   background-color: #efefef;
+  box-sizing: border-box;
+  height: 48px;
+  width: 100%;
+  border-bottom: 1px solid #dedede;
 
   &:hover {
     background-color: #dedede;
@@ -21,4 +25,53 @@
     margin: 0 -20px 0 0;
     padding: 0 0 0 0;
   }
+}
+
+.selection-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 8px;
+  padding: 0 12px 0 0;
+  width: 100%;
+}
+
+.icon-checkbox-wrapper {
+  min-width: 32px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.icon {
+  display: block;
+  min-width: 32px;
+}
+
+.checkbox {
+  display: none;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  padding: 3px;
+}
+
+.icon-checkbox-wrapper:hover > .icon,
+.checkbox:checked ~ .icon {
+  display: none;
+}
+
+.icon-checkbox-wrapper:hover > .checkbox,
+.checkbox:checked {
+  display: block;
+}
+
+.text {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

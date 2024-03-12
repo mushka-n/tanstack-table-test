@@ -97,6 +97,7 @@ export const useTableSizing = (
     // [first column to the right] with (width > minSize) gets smaller by [delta]
     if (isMovingRight && isRightAligned) {
       const validEntries = filterOutMinSizeColumns(rightEntries);
+      console.log(validEntries);
       if (!validEntries.length) return;
 
       const adjustedEntry = validEntries[0];

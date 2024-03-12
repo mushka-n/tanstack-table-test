@@ -2,20 +2,23 @@ import { useEffect, useState } from 'react';
 
 export const useContentWidth = (
   containerRef: React.RefObject<HTMLDivElement>
-) => {
-  const [contentWidth, setContentWidth] = useState(0);
+): [number, number] => {
+  const [contentSize, setContentSize] = useState<[number, number]>([0, 0]);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const observer = new ResizeObserver((entries) =>
-      setContentWidth(entries[0].contentRect.width)
+      setContentSize([
+        entries[0].contentRect.width,
+        entries[0].contentRect.height,
+      ])
     );
 
     observer.observe(container);
     return () => container && observer.unobserve(container);
   }, [containerRef]);
 
-  return contentWidth;
+  return contentSize;
 };

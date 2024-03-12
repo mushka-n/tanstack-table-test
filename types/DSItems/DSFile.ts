@@ -9,5 +9,6 @@ export type DSFile = {
   contentLength: string;
   created: Date;
   updated: Date;
+  erasure: Date;
   fileType: DSFileType;
 };

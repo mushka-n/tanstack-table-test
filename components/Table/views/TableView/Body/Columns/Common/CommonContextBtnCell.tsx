@@ -1,3 +1,5 @@
+import { ContextMenu } from '@radix-ui/react-context-menu';
+
 const CommonContextBtnCell = () => {
   return (
     <div
@@ -8,7 +10,8 @@ const CommonContextBtnCell = () => {
         justifyContent: 'flex-end',
       }}
     >
-      |
+      {/* <ContextMenu item={item}> */}
+      <button>CB</button> {/* </ContextMenu> */}
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import UsersTable from './UsersTable';
 import FilesTable from './FilesTable';
 import './styles.css';
+import TrashFilesContent from './TrashFilesTable';
 
 function App() {
   const [isInfoPanelVisible, setIsInfoPanelVisible] = useState<boolean>(false);
@@ -36,6 +37,12 @@ function App() {
 
           <div style={{ width: '100%', height: '600px' }}>
             <UsersTable />
+          </div>
+
+          <h2 style={{ marginTop: '40px', textAlign: 'center' }}>Users</h2>
+
+          <div style={{ width: '100%', height: '600px' }}>
+            <TrashFilesContent />
           </div>
         </div>
 
